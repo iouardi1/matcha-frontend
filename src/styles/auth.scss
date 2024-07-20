@@ -1,0 +1,102 @@
+
+body {
+    margin: 0;
+    overflow: hidden;
+  }
+  
+  .background {
+    width: 100vw;
+    height: 100vh;
+    background: #3E1E68;
+  }
+  
+  $particleSize: 20vmin;
+  $animationDuration: 6s;
+  $amount: 20;
+  .background span {
+    width: $particleSize;
+    height: $particleSize;
+    border-radius: $particleSize;
+    backface-visibility: hidden;
+    position: absolute;
+    animation-name: move;
+    animation-duration: $animationDuration;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    $colors: (
+      #583C87,
+      #E45A84,
+      #FFACAC
+    );
+    @for $i from 1 through $amount {
+      &:nth-child(#{$i}) {
+        color: nth($colors, random(length($colors)));
+        top: random(100) * 1%;
+        left: random(100) * 1%;
+        animation-duration: (random($animationDuration * 10) / 10) * 1s + 10s;
+        animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
+        transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
+        $blurRadius: (random() + 0.5) * $particleSize * 0.5;
+        $x: if(random() > 0.5, -1, 1);
+        box-shadow: ($particleSize * 2 * $x) 0 $blurRadius currentColor;
+      }
+    }
+  }
+  
+  @keyframes move {
+    100% {
+      transform: translate3d(0, 0, 1px) rotate(360deg);
+    }
+  }
+
+.animated-background {
+    background: linear-gradient(270deg, #00c6ff, #0072ff);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .remember-forgot {
+    margin:-15px 0 15px;
+    font-size:.9em;
+    color:#272222;
+    display:flex;
+    justify-content:space-between;
+  }
+  .remember-forgot label input {
+    margin-right:3px;
+  }
+  .remember-forgot a {
+    color:#272222;
+    text-decoration:none;
+  }
+  .remember-forgot a:hover {
+    text-decoration:underline;
+  }
+
+  .register-link {
+    font-size:.9em;
+    color:#272222;
+    text-align:center;
+    margin:25px 0 10px;
+  }
+  .register-link p a {
+    color:#272222;
+    text-decoration:none;
+    font-weight:600;
+  }
+  .register-link p a:hover {
+    text-decoration:underline;
+
+  }
