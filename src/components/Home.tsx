@@ -4,42 +4,9 @@ import { SparklesCore } from "./ui/sparkles";
 import {
   IconBrandTinder
 } from "@tabler/icons-react";
-import { authUser } from "@/redux/authUser";
-import { useDispatch, useSelector } from "react-redux";
 
 export function Home() {
-  // const dispatch = useDispatch();
-  // const users = useSelector(state => state.items);
-  // const loading = useSelector(state => state.loading);
-  // const error = useSelector(state => state.error);
-  // const data = {
-  //   "email": "oussama.aissouni@example.com",
-  //   "password": "password123456"
-  // }
-
-  // useEffect(() => {
-  //   const authenticateUser = async () => {
-  //     try {
-  //       // const data = { email: 'test@example.com', password: 'password' }; // Sample data, replace with actual user data
-  //       const response = await dispatch(authUser(data));
-  //       console.log('Login successful', response);
-  //     } catch (error) {
-  //       console.error('Login failed', error);
-  //     }
-  //   };
-
-  //   authenticateUser();
-  // }, [dispatch]);
-
-  // if (error) {
-  //   return <div>Error! {error.message}</div>;
-  // }
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-
+ 
   const router = useRouter()
 
   return (

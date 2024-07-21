@@ -1,98 +1,218 @@
-import React from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+'use client'
+
+import React, { useState } from "react";
 import { cn } from "@/utils/cn";
 import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
+import { SparklesCore } from "../ui/sparkles";
+import { authUser, registerUser } from "@/redux/authUser";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@reduxjs/toolkit/query";
 
 export function RegisterForm() {
+	const dispatch = useDispatch();
+	const users = useSelector(state => state.items);
+	const loading = useSelector(state => state.loading);
+  	const error = useSelector(state => state.error);
+	const [formData, setFormData] = useState({
+		firstname: '',
+		lastname: '',
+		username: '',
+		email: '',
+		password: '',
+		confirmPassword: ''
+	  });
+      // Handle form input change
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+	e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      console.error('Passwords do not match');
+      return;
+	}
+    try {
+      const response = await dispatch(registerUser(formData));
+      setFormData({
+        firstname: '',
+        lastname: '',
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+      } catch (error) {
+        console.error('Login failed', error);
+      }
+  };
+
+
+  if (error) {
+    return <div>Error! {error.message}</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
-    // <div className="flex h-screen items-center">
-    <div className="background flex h-screen items-center justify-center">
-    <span></span>
-    <span></span>
-    <span></span>
-    {/* <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span> */}
-      <div className="max-w-md w-full h-[85%] mx-auto my-[20px] rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-        <h2 className="font-bold text-xl text-center text-neutral-800 dark:text-neutral-200">
-          Welcome to Matcha
-        </h2>
-        <form className="my-8" >{/* onSubmit={handleSubmit} */}
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-            <LabelInputContainer>
-              <Label htmlFor="firstname">First name</Label>
-              <Input id="firstname" placeholder="First Name" type="text" />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="lastname">Last name</Label>
-              <Input id="lastname" placeholder="Last Name" type="text" />
-            </LabelInputContainer>
-          </div>
+	<div className="flex h-screen items-center">
+		<div className="w-full absolute inset-0 h-screen">
+			<SparklesCore
+				id="tsparticlesfullpage"
+				background="transparent"
+				minSize={0.6}
+				maxSize={1.4}
+				particleDensity={100}
+				className="w-full h-full"
+				particleColor="#FFFFFF"
+			/>
+		</div>
+		<div className="max-w-md w-full h-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input  z-10">
+			<h2 className="font-bold text-xl text-center text-white">
+				Welcome to Matcha
+			</h2>
+			<form className="my-8" onSubmit={handleSubmit}>
+				{/* onSubmit={handleSubmit} */}
+				<div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+					<LabelInputContainer>
+						<label className="block text-sm font-medium leading-6 text-white">
+							First Name
+						</label>
+						<input
+							id="firstname"
+							name="firstname"
+							type="text"
+							autoComplete=""
+							onChange={handleChange}
+							required
+							// placeholder="First Name"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</LabelInputContainer>
 
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" placeholder="Username" type="text" />
-          </LabelInputContainer>
-          
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
-          </LabelInputContainer>
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
-          </LabelInputContainer>
-          
-          <LabelInputContainer className="mb-8">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              placeholder="••••••••"
-              type="password"
-            />
-          </LabelInputContainer>
+					<LabelInputContainer>
+						<label className="block text-sm font-medium leading-6 text-white">
+							Last Name
+						</label>
+						<input
+							id="lastname"
+							name="lastname"
+							type="text"
+							autoComplete=""
+							onChange={handleChange}
+							required
+							// placeholder="Last Name"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</LabelInputContainer>
+				</div>
 
-          <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-          >
-            Sign up &rarr;
-            <BottomGradient />
-          </button>
+				<LabelInputContainer className="mb-4">
+					<label className="block text-sm font-medium leading-6 text-white">
+						Username
+					</label>
+					<div className="mt-2">
+						<input
+							id="username"
+							name="username"
+							type="text"
+							autoComplete=""
+							onChange={handleChange}
+							required
+							// placeholder="Username"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</LabelInputContainer>
 
-          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+				<LabelInputContainer className="mb-4">
+					<label className="block text-sm font-medium leading-6 text-white">
+						Email address
+					</label>
+					<div className="mt-2">
+						<input
+							id="email"
+							name="email"
+							type="email"
+							autoComplete="email"
+							onChange={handleChange}
+							required
+							// placeholder="projectmayhem@fc.com"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</LabelInputContainer>
 
-          <div className="flex flex-col space-y-4 items-center">
-            <button
-              className=" relative group/btn flex space-x-2 items-center justify-center px-4 w-[50%] text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-              type="submit"
-            >
-              <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-              <div className="text-neutral-700 dark:text-neutral-300 text-sm">
-                Google
-              </div>
-              <BottomGradient />
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+				<LabelInputContainer className="mb-4">
+					<label className="block text-sm font-medium leading-6 text-white">
+						Password
+					</label>
+					<div className="mt-2">
+						<input
+							id="password"
+							name="password"
+							type="password"
+							autoComplete="current-password"
+							onChange={handleChange}
+							required
+							placeholder="••••••••"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</LabelInputContainer>
+
+				<LabelInputContainer className="mb-8">
+					<label className="block text-sm font-medium leading-6 text-white">
+						Confirm Password
+					</label>
+					<div className="mt-2">
+						<input
+							id="confirmPassword"
+							name="confirmPassword"
+							type="password"
+							autoComplete="current-password"
+							onChange={handleChange}
+							required
+							placeholder="••••••••"
+							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						/>
+					</div>
+				</LabelInputContainer>
+
+				<button
+					className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					type="submit"
+				>
+					Sign up &rarr;
+				</button>
+
+				<div className="bg-gradient-to-r from-transparent via-neutral-300 to-transparent my-8 h-[1px] w-full" />
+			</form>
+			<form action={process.env.API + "/auth/google"}>
+				<div className="flex flex-col space-y-4 items-center">
+					<button
+						className=" relative group/btn flex space-x-2 items-center justify-center px-4 w-[50%] text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
+						type="submit"
+					>
+						<IconBrandGoogle className="h-4 w-4 text-neutral-800" />
+						<span className="text-neutral-700 text-sm">
+							Google
+						</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	);
 }
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  );
-};
 
 const LabelInputContainer = ({children, className}: {children: React.ReactNode; className?: string;}) => {
   return (
