@@ -24,6 +24,24 @@ export function authUser(data: any) {
       .catch(error => dispatch(authUserFailure(error)));
   };
 }
+export function registerUser(data: any) {
+  return dispatch => {
+    dispatch(authUserBegin());
+    return  fetch(`${process.env.API}/auth/register`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(handleErrors)
+      .then(response => response.json())
+      .then(json => {
+          window.location.href = '/auth/login';
+      })
+      .catch(error => dispatch(authUserFailure(error)));
+  };
+}
 
 // Helper function for error handling
 function handleErrors(response) {
