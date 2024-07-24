@@ -6,9 +6,11 @@ import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { SparklesCore } from "../ui/sparkles";
-import { authUser, registerUser } from "@/redux/authUser";
+import { registerUser } from "@/redux/authUser";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@reduxjs/toolkit/query";
+import { Field, Form, Formik } from "formik";
+import { SignUpSchema } from "@/validations";
+import  { Toaster } from "react-hot-toast";
 
 export function RegisterForm() {
 	const dispatch = useDispatch();
@@ -23,44 +25,13 @@ export function RegisterForm() {
 		password: '',
 		confirmPassword: ''
 	  });
-      // Handle form input change
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-	e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      console.error('Passwords do not match');
-      return;
-	}
-    try {
-      const response = await dispatch(registerUser(formData));
-      setFormData({
-        firstname: '',
-        lastname: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-      } catch (error) {
-        console.error('Login failed', error);
-      }
-  };
-
-
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
   if (error) {
-    return <div>Error! {error.message}</div>;
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
+	// toast.error(error.statusText);
+    // return <div>pfff...</div>;
   }
   return (
 	<div className="flex h-screen items-center">
@@ -75,18 +46,35 @@ export function RegisterForm() {
 				particleColor="#FFFFFF"
 			/>
 		</div>
+		<Toaster position="top-right" />
 		<div className="max-w-md w-full h-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input  z-10">
 			<h2 className="font-bold text-xl text-center text-white">
 				Welcome to Matcha
 			</h2>
-			<form className="my-8" onSubmit={handleSubmit}>
-				{/* onSubmit={handleSubmit} */}
+			<Formik
+				initialValues={{
+					firstname: '',
+					lastname: '',
+					username: '',
+					email: '',
+					password: '',
+					confirmPassword: ''
+				}}
+				validationSchema={SignUpSchema}
+				onSubmit={async (values, { resetForm }) => {
+					const response = await dispatch(registerUser(values));
+					console.log({response});
+					resetForm();
+				}}
+        	>
+			{({ errors, touched, handleChange, handleSubmit }) => (
+			<Form className="my-8" onSubmit={handleSubmit}>
 				<div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
 					<LabelInputContainer>
 						<label className="block text-sm font-medium leading-6 text-white">
 							First Name
 						</label>
-						<input
+						<Field
 							id="firstname"
 							name="firstname"
 							type="text"
@@ -94,15 +82,18 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							// placeholder="First Name"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						 {touched.firstname && errors.firstname && (
+                   			 <div className="text-red-600">{errors.firstname}</div>
+                  )}
 					</LabelInputContainer>
 
 					<LabelInputContainer>
 						<label className="block text-sm font-medium leading-6 text-white">
 							Last Name
 						</label>
-						<input
+						<Field
 							id="lastname"
 							name="lastname"
 							type="text"
@@ -110,8 +101,11 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							// placeholder="Last Name"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						 {touched.lastname && errors.lastname && (
+							<div className="text-red-600">{errors.lastname}</div>
+						)}
 					</LabelInputContainer>
 				</div>
 
@@ -120,7 +114,7 @@ export function RegisterForm() {
 						Username
 					</label>
 					<div className="mt-2">
-						<input
+						<Field
 							id="username"
 							name="username"
 							type="text"
@@ -128,17 +122,20 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							// placeholder="Username"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						 {touched.username && errors.username && (
+                    		<div className="text-red-600">{errors.username}</div>
+                  )}
 					</div>
 				</LabelInputContainer>
 
 				<LabelInputContainer className="mb-4">
 					<label className="block text-sm font-medium leading-6 text-white">
-						Email address
+						Email
 					</label>
 					<div className="mt-2">
-						<input
+						<Field
 							id="email"
 							name="email"
 							type="email"
@@ -146,8 +143,11 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							// placeholder="projectmayhem@fc.com"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						  {touched.email && errors.email && (
+                    		<div className="text-red-600">{errors.email}</div>
+                  )}
 					</div>
 				</LabelInputContainer>
 
@@ -156,7 +156,7 @@ export function RegisterForm() {
 						Password
 					</label>
 					<div className="mt-2">
-						<input
+						<Field
 							id="password"
 							name="password"
 							type="password"
@@ -164,8 +164,11 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							placeholder="••••••••"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						  {touched.password && errors.password && (
+                    <div className="text-red-600">{errors.password}</div>
+                  )}
 					</div>
 				</LabelInputContainer>
 
@@ -174,7 +177,7 @@ export function RegisterForm() {
 						Confirm Password
 					</label>
 					<div className="mt-2">
-						<input
+						<Field
 							id="confirmPassword"
 							name="confirmPassword"
 							type="password"
@@ -182,20 +185,26 @@ export function RegisterForm() {
 							onChange={handleChange}
 							required
 							placeholder="••••••••"
-							className="pl-2 block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="auth-input"
 						/>
+						  {touched.confirmPassword && errors.confirmPassword && (
+                    		<div className="text-red-600">{errors.confirmPassword}</div>
+                  )}
 					</div>
 				</LabelInputContainer>
 
 				<button
-					className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					className="auth-submit"
 					type="submit"
 				>
 					Sign up &rarr;
 				</button>
 
 				<div className="bg-gradient-to-r from-transparent via-neutral-300 to-transparent my-8 h-[1px] w-full" />
-			</form>
+			</Form>
+			)}
+		</Formik>
+
 			<form action={process.env.API + "/auth/google"}>
 				<div className="flex flex-col space-y-4 items-center">
 					<button

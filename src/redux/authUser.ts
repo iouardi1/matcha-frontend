@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { authUserBegin, authUserSuccess, authUserFailure } from './actions';
 
 export function authUser(data: any) {
@@ -25,6 +26,8 @@ export function authUser(data: any) {
   };
 }
 export function registerUser(data: any) {
+// toast.configure();
+
   return dispatch => {
     dispatch(authUserBegin());
     return  fetch(`${process.env.API}/auth/register`, {
@@ -34,12 +37,22 @@ export function registerUser(data: any) {
       },
       body: JSON.stringify(data)
     })
-      .then(handleErrors)
-      .then(response => response.json())
-      .then(json => {
-          window.location.href = '/auth/login';
-      })
-      .catch(error => dispatch(authUserFailure(error)));
+    .then(async response => {
+      const json = await response.json();
+      if (!response.ok) {
+        throw json;
+      }
+      return json;
+    })
+    .then(json => {
+      // dispatch(authUserSuccess({ users: json }));
+
+      window.location.href = '/auth/login';
+    })
+    .catch(error => {
+	    toast.error(error.statusText);
+      dispatch(authUserFailure({ payload: error }));
+    });
   };
 }
 
