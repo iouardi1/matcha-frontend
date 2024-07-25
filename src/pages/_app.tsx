@@ -1,14 +1,15 @@
-import { Provider } from 'react-redux';
-import store from '../redux/store';
-import '@/styles/globals.css';
-import '@/styles/auth.scss';
+import { Provider } from "react-redux";
+import store from "../redux/store";
+import "@/styles/globals.css";
+import "@/styles/auth.scss";
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-    </Provider>
-  );
+	return (
+		<Provider store={store}>
+				<Component {...pageProps} />
+		</Provider>
+	);
 }
 
 export default MyApp;
+   

@@ -1,56 +1,54 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '@/redux/slices/authSlice';
-import { cn } from '@/utils/cn';
-import { Label } from '@radix-ui/react-label';
-import { Input } from '../ui/input';
-import { useEffect, useState } from 'react';
-import { authUser } from '@/redux/authUser';
-import { IconBrandGoogle, IconBrandTinder } from '@tabler/icons-react';
-import { SparklesCore } from '../ui/sparkles';
-
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "@/redux/slices/authSlice";
+import { cn } from "@/utils/cn";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "../ui/input";
+import { useEffect, useState } from "react";
+import { authUser } from "@/redux/authUser";
+import { IconBrandGoogle, IconBrandTinder } from "@tabler/icons-react";
+import { SparklesCore } from "../ui/sparkles";
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
-  const users = useSelector(state => state.items);
-  const loading = useSelector(state => state.loading);
-  const error = useSelector(state => state.error);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-      // Handle form input change
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+	const dispatch = useDispatch();
+	const users = useSelector((state) => state.items);
+	const loading = useSelector((state) => state.loading);
+	const error = useSelector((state) => state.error);
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
+	// Handle form input change
+	const handleChange = (e: any) => {
+		const { name, value } = e.target;
+		setFormData({
+			...formData,
+			[name]: value,
+		});
+	};
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const response = await dispatch(authUser(formData));
-        setFormData({
-          email: '',
-          password: ''
-        });
-      } catch (error) {
-        console.error('Login failed', error);
-      }
-  };
+	// Handle form submission
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await dispatch(authUser(formData));
+			setFormData({
+				email: "",
+				password: "",
+			});
+		} catch (error) {
+			console.error("Login failed", error);
+		}
+	};
 
+	if (error) {
+		return <div>Error! {error.message}</div>;
+	}
 
-  if (error) {
-    return <div>Error! {error.message}</div>;
-  }
+	if (loading) {
+		return <div>Loading...</div>;
+	}
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return (
+	return (
 		<div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
 			<div className="w-full absolute inset-0 h-screen">
 				<SparklesCore
@@ -69,7 +67,7 @@ const LoginForm = () => {
 					Sign in to your account
 				</h2>
 			</div>
-			
+
 			<form
 				action={`${process.env.API}/auth/google`}
 				className="flex flex-col mt-10 space-y-4 items-center sm:mx-auto sm:w-full sm:max-w-sm z-50"
@@ -100,7 +98,7 @@ const LoginForm = () => {
 								id="email"
 								name="email"
 								type="email"
-                onChange={handleChange}
+								onChange={handleChange}
 								autoComplete="email"
 								required
 								className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-2"
@@ -127,7 +125,7 @@ const LoginForm = () => {
 								id="password"
 								name="password"
 								type="password"
-                onChange={handleChange}
+								onChange={handleChange}
 								autoComplete="current-password"
 								required
 								className="block w-full rounded-md border-0 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-2"
