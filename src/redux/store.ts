@@ -1,11 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './reducer';
+import { legacy_createStore as createStore , applyMiddleware } from 'redux';
+import {thunk} from 'redux-thunk';
+import profileReducer from './reducers/profileReducer';
 
-
-const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(),
-  devTools: process.env.NODE_ENV !== 'production',
-});
-
-export default store;
+export default createStore(
+  profileReducer,
+  applyMiddleware(thunk)
+);

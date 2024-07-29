@@ -1,4 +1,4 @@
-import { AUTH_USER_BEGIN, AUTH_USER_SUCCESS, AUTH_USER_FAILURE } from './actionTypes';
+import { AUTH_USER_BEGIN, AUTH_USER_SUCCESS, AUTH_USER_FAILURE } from '../actions/types/actionTypes';
 
 const initialState = {
   items: [],

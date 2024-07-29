@@ -1,7 +1,7 @@
-import { Provider } from "react-redux";
-import store from "../redux/store";
-import "@/styles/globals.css";
-import "@/styles/auth.scss";
+import { Provider } from 'react-redux';
+import store from '../redux/store';
+import '@/styles/globals.css';
+import '@/styles/auth.css';
 
 function MyApp({ Component, pageProps }) {
 	return (

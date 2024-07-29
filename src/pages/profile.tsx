@@ -1,30 +1,59 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { getCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { profileFetch } from "@/redux/effects/profileFetchEffect";
 
-export default function profile() {
-	const router = useRouter();
+export async function getServerSideProps(context: any) {
+	const { req } = context;
 
-	async function fetchProfile(token: any) {
-		const res = await fetch(` http://localhost:3005/profile`, {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${token}`,
-				"Content-Type": "application/json",
+	const token = req.cookies.accessToken;
+	if (!token) {
+		return {
+			redirect: {
+				destination: "/auth/login",
+				permanent: false,
 			},
-		});
-		// const test = await res.json()
-
-		if (!res.ok) {
-			router.push("./auth/login");
-		}
+		};
 	}
 
+	const response = await fetch(`http://localhost:3005/profile`, {
+		method: "GET",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		return {
+			redirect: {
+				destination: "/auth/login",
+				permanent: false,
+			},
+		};
+	}
+
+	const {data} = await response.json();
+
+	return {
+		props: {
+			data: data,
+		},
+	};
+}
+
+interface ProfileProps {
+	data: string;
+}
+
+export default function Profile({ data }: ProfileProps): any {
+	const dispatch = useDispatch();
+	const profile = useSelector((state:any) => state.data);
+  
 	useEffect(() => {
-		const token = getCookie("accessToken");
-		fetchProfile(token);
-	}, []);
-	return <div>profile</div>;
+	dispatch(profileFetch(data));
+	}, [dispatch]);
+
+	return <div>{JSON.stringify(profile)}</div>;
 }
