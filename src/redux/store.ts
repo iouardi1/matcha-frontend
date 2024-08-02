@@ -1,8 +1,10 @@
-import { legacy_createStore as createStore , applyMiddleware } from 'redux';
-import {thunk} from 'redux-thunk';
-import profileReducer from './reducers/profileReducer';
+import { configureStore } from '@reduxjs/toolkit'
+import profileReducer from './features/profileSlice'
+export const store = configureStore({
+  reducer: {
+    profile:profileReducer
+  },
+})
 
-export default createStore(
-  profileReducer,
-  applyMiddleware(thunk)
-);
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
