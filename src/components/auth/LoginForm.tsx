@@ -55,6 +55,9 @@ const LoginForm = () => {
       <div className="flex flex-col mt-10 space-y-4 items-center sm:mx-auto sm:w-full sm:max-w-sm">
         Or
       </div>
+      <div className="flex flex-col mt-10 space-y-4 items-center sm:mx-auto sm:w-full sm:max-w-sm">
+        Or
+      </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm z-10">
         <Formik
