@@ -13,7 +13,7 @@ export function Home() {
     <div className="h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden">
       <nav className="text-white absolute top-0 left-0 w-full z-10 flex justify-between p-5">
           <div className="flex items-center">
-            <IconBrandTinder size={50}/>
+            <IconBrandTinder color="#fd5564" fill="#fd5564" size={50}/>
             <h1 className="md:text-7xl text-3xl lg:text-3xl font-bold">Matcha</h1>
           </div>
           <div>
