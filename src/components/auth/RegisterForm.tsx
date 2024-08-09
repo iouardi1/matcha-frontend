@@ -6,17 +6,20 @@ import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { SparklesCore } from "../ui/sparkles";
-import { registerUser } from "@/redux/authUser";
 import { useDispatch, useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import { SignUpSchema } from "@/validations";
-import  { Toaster } from "react-hot-toast";
+import  toast, { Toaster } from "react-hot-toast";
+import { registerUser } from "@/redux/features/registerSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie';
+
 
 export function RegisterForm() {
 	const dispatch = useDispatch();
-	const users = useSelector(state => state.items);
-	const loading = useSelector(state => state.loading);
-  	const error = useSelector(state => state.error);
+	const { loading, userInfo, userToken, error, success } = useSelector(
+		(state: any) => state.register
+	  )
 	const [formData, setFormData] = useState({
 		firstname: '',
 		lastname: '',
@@ -26,13 +29,6 @@ export function RegisterForm() {
 		confirmPassword: ''
 	  });
 
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-  if (error) {
-	// toast.error(error.statusText);
-    // return <div>pfff...</div>;
-  }
   return (
 	<div className="flex h-screen items-center">
 		<div className="w-full absolute inset-0 h-screen">
@@ -62,10 +58,20 @@ export function RegisterForm() {
 				}}
 				validationSchema={SignUpSchema}
 				onSubmit={async (values, { resetForm }) => {
-					const response = await dispatch(registerUser(values));
-					console.log({response});
-					resetForm();
-				}}
+                    try {
+                        const resultAction = await dispatch(registerUser(values));
+                        const data = unwrapResult(resultAction);
+                        if (data) {
+							resetForm();
+							toast.success('Registration successful!');
+							window.location.href = './login'; ;
+                        }
+                    } catch (error: any) {
+						toast.error(error);
+						resetForm();
+
+                    }
+                }}
         	>
 			{({ errors, touched, handleChange, handleSubmit }) => (
 			<Form className="my-8" onSubmit={handleSubmit}>
@@ -196,7 +202,9 @@ export function RegisterForm() {
 				<button
 					className="auth-submit"
 					type="submit"
+					disabled={loading}
 				>
+					{/* {loading ? <Spinner /> : 'Register'} */}
 					Sign up &rarr;
 				</button>
 

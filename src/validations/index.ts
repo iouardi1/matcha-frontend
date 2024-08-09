@@ -32,3 +32,32 @@ export const SignUpSchema = () =>
             .oneOf([Yup.ref('password'), null], "Passwords must match")
             .required(("Field is mandatory"))
     });
+
+    export const ForgetPasswordSchema = () =>
+        Yup.object().shape({
+          email: Yup.string()
+            .email(("Invalid Email"))
+            .required(("Field is mandatory")),
+          code: Yup.number()
+          .required()
+          .min(100000, 'Must be exactly 6 characters')
+          .max(999999, 'Must be exactly 6 characters')
+          .label("Zip Code"),
+        });
+    
+    export const sendVerificationCodeSchema = () =>
+        Yup.object().shape({
+          email: Yup.string()
+            .email(("Invalid Email"))
+            .required(("Field is mandatory")),
+        });
+
+    export const ResetPasswordSchema = () =>
+        Yup.object().shape({
+            password: Yup.string()
+            .min(2, ("Password must be at least 8 characters"))
+            .required(("Field is mandatory")),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref('password'), null], "Passwords must match")
+                .required(("Field is mandatory"))
+        });
