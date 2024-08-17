@@ -61,7 +61,7 @@ function verifyData(data: any) {
 }
 
 export const profileInit: any = createAsyncThunk("profile/init", async () => {
-	const response = await axiosInstance.get("/api/profile/setup");
+	const response = await axiosInstance.get("/profile/setup");
 	return response.data;
 });
 
@@ -71,7 +71,7 @@ export const profileSetup: any = createAsyncThunk(
 		const { profileSetup }: any = getState();
 
 		if (verifyData(profileSetup)) {
-			await axiosInstance.post("/api/profile/setup", {
+			await axiosInstance.post("/profile/setup", {
 				images: profileSetup.images.map((item: any) => ({ path: item.path })),
 				bio: profileSetup.bio,
 				interests: profileSetup.selectedInterests,
@@ -92,7 +92,7 @@ export const uploadFile: any = createAsyncThunk(
 			const formData = new FormData();
 			formData.append("file", file);
 
-			const response = await axiosInstance.post("/api/upload", formData, {
+			const response = await axiosInstance.post("/upload", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -109,7 +109,7 @@ export const deleteFile: any = createAsyncThunk(
 	"files/deleteFile",
 	async (filename: any, { rejectWithValue }) => {
 		try {
-			const response = await axiosInstance.delete("/api/upload", {
+			const response = await axiosInstance.delete("/upload", {
 				data: filename,
 			});
 			return response.data;
@@ -211,6 +211,6 @@ export const {
 	changeGenderValue,
 	setBirthday,
 	setUsername,
-} = profileSetupSlice.actions;
+} = profileSetupSlice.actions;  
 
 export default profileSetupSlice.reducer;

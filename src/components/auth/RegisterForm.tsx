@@ -13,6 +13,7 @@ import  toast, { Toaster } from "react-hot-toast";
 import { registerUser } from "@/redux/features/registerSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie';
+import { LabelInputContainer } from "../ui/labelInputContainer";
 
 
 export function RegisterForm() {
