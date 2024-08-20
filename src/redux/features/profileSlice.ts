@@ -13,7 +13,7 @@ const initialState: profileState = {
 	data: [],
 };
 
-export const profileFetch = createAsyncThunk("profile/fetch", async () => {
+export const profileFetch:any = createAsyncThunk("profile/fetch", async () => {
 	const response = await axiosInstance.get("/profile");
 	return response.data;
 });

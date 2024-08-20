@@ -13,6 +13,7 @@ import  toast, { Toaster } from "react-hot-toast";
 import { registerUser } from "@/redux/features/registerSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie';
+import { LabelInputContainer } from "../ui/labelInputContainer";
 
 
 export function RegisterForm() {
@@ -230,13 +231,5 @@ export function RegisterForm() {
 	</div>
 	);
 }
-
-const LabelInputContainer = ({children, className}: {children: React.ReactNode; className?: string;}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
 
 export default RegisterForm
