@@ -1,11 +1,14 @@
 import Image from "next/image"
-import profilePath from "@/utils/pictures/person.jpg"
+import profilePath from "/Users/macos/Desktop/matcha-backend/uploads/1725296132754.jpeg"
 import blurred from "@/utils/pictures/blurred.png"
 import searchPath from "@/utils/pictures/icons8-search-final.png"
 import premiumPath from "@/utils/pictures/icons8-premium-final.png"
 import settingPath from "@/utils/pictures/icons8-setting-final.png"
 import { useDispatch, useSelector } from "react-redux"
-import {setActiveConversation, setTab} from "@/redux/features/sideBarSlice"
+import {getConversations, getProfile, initiateNewDM, setActiveConversation, setTab} from "@/redux/features/sideBarSlice"
+import { useEffect } from "react"
+import { getImage } from "@/utils/helpers/functions"
+import { useSocket } from "@/redux/context/SocketContext"
 
 const SideBar = () => {
 
@@ -15,13 +18,37 @@ const SideBar = () => {
     const likes = useSelector((state: any) => state.sideBar.likes);
     const conversations = useSelector((state: any) => state.sideBar.conversations);
     const Profile = useSelector((state: any) => state.sideBar.profile);
+    const socket = useSocket();
+
+
+
+    useEffect(() => {
+        dispatch(getProfile())
+    }, [])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab));
+        dispatch(getConversations(Profile.id));
+        console.log(Profile.id);
     };
+
 
     const handleConversationClick = (id: string) => {
         dispatch(setActiveConversation(id));
+        dispatch(setTab('messages'));
+    };
+
+    const initiateDM = (match_id: string) => {
+        if (match_id == conversations.find((c: any) => c.match_id == match_id)) {
+            dispatch(setActiveConversation(match_id));
+        }
+        else {
+            const participants = { participant_id: match_id, user_id: Profile.id}
+            dispatch(initiateNewDM(participants));
+            dispatch(getConversations(Profile.id));
+
+        }
+        dispatch(setTab('messages'));
     };
 
     return (
@@ -29,8 +56,8 @@ const SideBar = () => {
             <div className="header">
                 <div className="profile-info">
                     <button>
-                        <Image
-                            src={Profile.profilePicture}
+                        <img
+                            src={getImage(Profile.profile_picture)}
                             alt=""
                             className="picture"
                         /> 
@@ -98,7 +125,7 @@ const SideBar = () => {
                             <button
                                 key={match.id}
                                 className="match"
-                                onClick={() => handleConversationClick(match.id)}
+                                onClick={() => initiateDM(match.id)}
                                 >
                                 <Image
                                     src={match.profilePicture}
@@ -117,14 +144,20 @@ const SideBar = () => {
                                     className="conversation"
                                     onClick={() => handleConversationClick(conversation.id)}
                                 >
-                                    <Image
-                                        src={conversation.userPicture}
+                                    <img
+                                        src={getImage(conversation.photo)}
+                                        // width={65}
+                                        // height={65}
                                         alt="Profile picture"
                                         className="conversation-picture"
                                     />
                                     <div className="conv-details">
-                                        <p className="name">{conversation.name}</p>
-                                        <p className="last-message">{conversation.lastMessage}</p>
+                                        <p className="name">{conversation.username}</p>
+                                        <p className="last-message">
+                                        
+                                        {conversation.last_message ? conversation.last_message : '--- ---'}
+                                        
+                                        </p>
                                     </div>
                                 </button>
                             ))}

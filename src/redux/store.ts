@@ -13,6 +13,7 @@ import resetPasswordUserReducer from './features/resetPasswordSlice'
 import sideBarReducer from './features/sideBarSlice'
 import layoutReducer from './features/layoutSlice'
 import conversationReducer from './features/conversationSlice'
+import socketReducer from './features/socketSlice'
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     sideBar: sideBarReducer,
     layout: layoutReducer,
     conversation: conversationReducer,
+    socket: socketReducer,
   },
 })
 

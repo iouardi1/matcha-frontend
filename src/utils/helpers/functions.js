@@ -1,3 +1,5 @@
+import { axiosInstance } from "@/_axios/instance";
+
 export const removeByAttr = function (arr, attr, value) {
 	var i = arr.length;
 	while (i--) {
@@ -37,4 +39,9 @@ export const generateId =function () {
 		counter += 1;
 	}
 	return result;
+}
+
+
+export const getImage =  (path) => {
+	return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`;
 }

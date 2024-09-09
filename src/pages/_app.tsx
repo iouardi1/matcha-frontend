@@ -9,7 +9,7 @@ import '@/styles/auth.css';
 import '@/styles/sideBar.css';
 import '@/styles/messages.css';
 import '@/styles/matches.css';
-
+import { SocketProvider } from '@/redux/context/SocketContext'
    
  
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -21,12 +21,15 @@ type AppPropsWithLayout = AppProps & {
 }
  
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
  
   return (
   	<Provider store={store}>
-		{getLayout(<Component {...pageProps} />)}
+      <SocketProvider>
+        {getLayout(<Component {...pageProps} />)}
+      </SocketProvider>
 	</Provider>
 	)
 }

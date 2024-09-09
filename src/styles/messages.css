@@ -101,11 +101,15 @@
 .conv .conv-era .conversation-history .message.user {
     background-color: #4f4f4f;
     align-self: flex-end;
+    justify-content: flex-end; /* Flexes the content inside the message to the right */
+    margin-left: auto; /* Pushes the message to the right side */
 }
 
 .conv .conv-era .conversation-history .message.match {
     background-color: #2e2e2e;
     align-self: flex-start;
+    justify-content: flex-start; /* Flexes the content inside the message to the right */
+    margin-left: auto;
 }
 
 .message-input {

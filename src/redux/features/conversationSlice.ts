@@ -18,6 +18,25 @@ export const fetchConversationMessages = createAsyncThunk(
     }
 );
 
+
+//new message is created directly from server
+// export const addNewMessage = createAsyncThunk(
+//     "addNewMessage",
+//     async (message, { rejectWithValue }) => {
+//         try {
+//             console.log('message: ', message)
+//             const response = await axiosInstance.post(`conversations/addNewMessage`, message);
+//             return response.data;
+//         } catch (error: any) {
+//             if (error.response && error.response.data.message) {
+//                 return rejectWithValue(error.response.data.message)
+//             } else {
+//                 return rejectWithValue(error.message)
+//             }
+//         }
+//     }
+// );
+
 const initialState = {
     activeConversationId: null,
     activeConversationMessages: [],
@@ -33,6 +52,9 @@ const conversationSlice = createSlice({
             state.activeConversationId = action.payload;
             state.activeConversationMessages = [];
         },
+        addNewMessages: (state, action) => {
+            state.activeConversationMessages = [ ...state.activeConversationMessages, action.payload ];
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -42,7 +64,6 @@ const conversationSlice = createSlice({
             .addCase(fetchConversationMessages.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.activeConversationMessages = action.payload;
-                console.log('messages', state.activeConversationMessages)
             })
             .addCase(fetchConversationMessages.rejected, (state, action) => {
                 state.status = 'failed';
@@ -51,6 +72,6 @@ const conversationSlice = createSlice({
     },
 });
 
-export const { setActiveConversation } = conversationSlice.actions;
+export const { setActiveConversation, addNewMessages } = conversationSlice.actions;
 
 export default conversationSlice.reducer;
