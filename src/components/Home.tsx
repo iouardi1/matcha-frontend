@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation'
 import { SparklesCore } from "./ui/sparkles";
 import {
@@ -6,7 +6,9 @@ import {
 } from "@tabler/icons-react";
 
 export function Home() {
- 
+
+
+
   const router = useRouter()
 
   return (
