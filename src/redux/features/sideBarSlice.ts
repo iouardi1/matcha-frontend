@@ -9,13 +9,13 @@ import { axiosInstance } from '@/_axios/instance';
 interface Match {
     id: number;
     name: string;
-    profile_picture: any;
+    profilePicture: any;
 }
 
 interface Profile {
     id: number;
     username: string;
-    profilePicture: any;
+    profile_picture: any;
 }
 
 interface Conversation {
@@ -42,7 +42,7 @@ interface SideBarState {
 const initialState: SideBarState = {
     tab: 'matches',
     matches: [
-        { id: 9, name: 'Match 1', profilePicture: match1 },
+        { id: 22, name: 'Match 1', profilePicture: match1 },
         // { id: 2, name: 'Match 2', profilePicture: match2 },
         // { id: 3, name: 'Match 3', profilePicture: match3 },
         // { id: 4, name: 'Match 4', profilePicture: match4 },
@@ -53,7 +53,8 @@ const initialState: SideBarState = {
     likes: 30,
     conversations: [
     ],
-    profile:  { id: 8, username: 'Oussama', profilePicture: profilePath },
+    // profile:  { id: 8, username: 'Oussama', profile_picture: profilePath },
+    profile: {id: 8, username: 'Oussama', profile_picture: profilePath},
     activeConversationId: null,
     loading: false,
 	error: null,
@@ -96,6 +97,7 @@ export const getProfile = createAsyncThunk(
     async (user_id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(`profile/getProfileInfos`);
+            // console.log(response.data)
             return response.data;
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -159,3 +161,4 @@ const sideBarSlice = createSlice({
 
 export const { setTab, setActiveConversation, updateLastMessage } = sideBarSlice.actions;
 export default sideBarSlice.reducer;
+

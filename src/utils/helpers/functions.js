@@ -43,5 +43,6 @@ export const generateId =function () {
 
 
 export const getImage =  (path) => {
+	// console.log(path);
 	return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`;
 }
