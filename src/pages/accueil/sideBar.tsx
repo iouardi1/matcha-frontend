@@ -5,7 +5,7 @@ import searchPath from "@/utils/pictures/icons8-search-final.png"
 import premiumPath from "@/utils/pictures/icons8-premium-final.png"
 import settingPath from "@/utils/pictures/icons8-setting-final.png"
 import { useDispatch, useSelector } from "react-redux"
-import {getConversations, getProfile, initiateNewDM, setActiveConversation, setTab} from "@/redux/features/sideBarSlice"
+import {getConversations, getListOfMatches, getProfile, initiateNewDM, setActiveConversation, setTab} from "@/redux/features/sideBarSlice"
 import { useEffect } from "react"
 import { getImage } from "@/utils/helpers/functions"
 import { useSocket } from "@/redux/context/SocketContext"
@@ -24,12 +24,14 @@ const SideBar = () => {
 
     useEffect(() => {
         dispatch(getProfile())
+        dispatch(getListOfMatches(Profile.id))
+        console.log('matches: ', matches)
     }, [])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab));
         dispatch(getConversations(Profile.id));
-        console.log(Profile.id);
+        console.log('profile picture: ', Profile.profile_picture);
     };
 
 
@@ -45,9 +47,10 @@ const SideBar = () => {
         else {
             const participants = { participant_id: match_id, user_id: Profile.id}
             dispatch(initiateNewDM(participants));
-            dispatch(getConversations(Profile.id));
-
+            // dispatch(getConversations(Profile.id));
+            
         }
+        dispatch(getConversations(Profile.id));
         dispatch(setTab('messages'));
     };
 
@@ -57,13 +60,13 @@ const SideBar = () => {
                 <div className="profile-info">
                     <button>
                         <img
-                            src={getImage(Profile.profile_picture)}
+                            src={getImage(Profile?.profile_picture)}
                             alt=""
                             className="picture"
                         /> 
                     </button>
                     <span className="username">
-                    {Profile.username}
+                    {Profile?.username}
                     </span>
                 </div>
                 <div className="icons">
@@ -121,14 +124,14 @@ const SideBar = () => {
                             />
                             <p className="likes-count">{likes} likes</p>
                         </div>
-                        {matches.map((match: any) => (
+                        {matches.length > 0 && matches?.map((match: any) => (
                             <button
                                 key={match.id}
                                 className="match"
                                 onClick={() => initiateDM(match.id)}
                                 >
-                                <Image
-                                    src={match.profilePicture}
+                                <img
+                                    src={getImage(match.profile_picture)}
                                     alt=""
                                     className="match-picture"
                                 />

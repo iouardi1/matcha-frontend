@@ -1,15 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import match1 from "@/utils/pictures/woman1.jpeg"
-import match2 from "@/utils/pictures/woman2.jpeg"
-import match3 from "@/utils/pictures/woman3.jpeg"
-import match4 from "@/utils/pictures/woman4.jpeg"
 import profilePath from "@/utils/pictures/person.jpg"
 import { axiosInstance } from '@/_axios/instance';
 
 interface Match {
     id: number;
-    name: string;
-    profilePicture: any;
+    username: string;
+    profile_picture: any;
 }
 
 interface Profile {
@@ -41,20 +38,11 @@ interface SideBarState {
 
 const initialState: SideBarState = {
     tab: 'matches',
-    matches: [
-        { id: 22, name: 'Match 1', profilePicture: match1 },
-        // { id: 2, name: 'Match 2', profilePicture: match2 },
-        // { id: 3, name: 'Match 3', profilePicture: match3 },
-        // { id: 4, name: 'Match 4', profilePicture: match4 },
-        // { id: 5, name: 'Match 5', profilePicture: match4 },
-        // { id: 6, name: 'Match 6', profilePicture: match1 },
-        // { id: 7, name: 'Match 7', profilePicture: match4 },
-    ],
+    matches: [],
     likes: 30,
     conversations: [
     ],
-    // profile:  { id: 8, username: 'Oussama', profile_picture: profilePath },
-    profile: {id: 8, username: 'Oussama', profile_picture: profilePath},
+    profile:  { id: 8, username: 'Oussama', profile_picture: profilePath },
     activeConversationId: null,
     loading: false,
 	error: null,
@@ -97,7 +85,22 @@ export const getProfile = createAsyncThunk(
     async (user_id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(`profile/getProfileInfos`);
-            // console.log(response.data)
+            return response.data;
+        } catch (error: any) {
+            if (error.response && error.response.data.user_id) {
+                return rejectWithValue(error.response.data.user_id)
+            } else {
+                return rejectWithValue(error.user_id)
+            }
+        }
+    }
+);
+
+export const getListOfMatches = createAsyncThunk(
+    "getListOfMatches",
+    async (user_id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(`profile/getListOfMatches`);
             return response.data;
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -152,6 +155,19 @@ const sideBarSlice = createSlice({
                 state.profile = action.payload.data;
             })
             .addCase(getProfile.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(getListOfMatches.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getListOfMatches.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log('payload: ', action.payload.data);
+                state.matches = action.payload.data;
+            })
+            .addCase(getListOfMatches.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
