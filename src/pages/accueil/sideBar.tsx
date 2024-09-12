@@ -7,7 +7,7 @@ import settingPath from '@/utils/pictures/icons8-setting-final.png'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     getConversations,
-    getProfile,
+    getListOfMatches, getProfile,
     initiateNewDM,
     setActiveConversation,
     setTab,
@@ -33,6 +33,7 @@ const SideBar = () => {
 
     useEffect(() => {
         dispatch(getProfile())
+        dispatch(getListOfMatches(Profile.id))
     }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
@@ -56,10 +57,11 @@ const SideBar = () => {
                 user_id: Profile.id,
             }
             dispatch(initiateNewDM(participants))
-            dispatch(getConversations(Profile.id))
+            // dispatch(getConversations(Profile.id))
         }
-        dispatch(setTab('messages'))
-    }
+        dispatch(getConversations(Profile.id));
+        dispatch(setTab('messages'));
+    };
 
     return (
         <div className="sidebar">
@@ -67,12 +69,14 @@ const SideBar = () => {
                 <div className="profile-info">
                     <button>
                         <img
-                            src={getImage(Profile.profile_picture)}
+                            src={getImage(Profile?.profile_picture)}
                             alt=""
                             className="picture"
                         />
                     </button>
-                    <span className="username">{Profile.username}</span>
+                    <span className="username">
+                    {Profile?.username}
+                    </span>
                 </div>
                 <div className="icons">
                     <button>
@@ -129,14 +133,14 @@ const SideBar = () => {
                             />
                             <p className="likes-count">{likes} likes</p>
                         </div>
-                        {matches.map((match: any) => (
+                        {matches.length > 0 && matches?.map((match: any) => (
                             <button
                                 key={match.id}
                                 className="match"
                                 onClick={() => initiateDM(match.id)}
-                            >
-                                <Image
-                                    src={match.profilePicture}
+                                >
+                                <img
+                                    src={getImage(match.profile_picture)}
                                     alt=""
                                     className="match-picture"
                                 />
