@@ -34,7 +34,7 @@ const initialState: profileSetupState = {
 		{ id: "placeholder-4" },
 		{ id: "placeholder-5" },
 	],
-	interests: ["Music", "Travel", "Sports", "Movies", "Art", "Technology"],
+	interests: ["Music", "Travel", "Sport", "Movies", "Art", "Technology"],
 	selectedInterests: [],
 	error: {
 		message: "",
@@ -71,7 +71,7 @@ export const profileSetup: any = createAsyncThunk(
 		const { profileSetup }: any = getState();
 
 		if (verifyData(profileSetup)) {
-			await axiosInstance.post("/profile/setup", {
+			const response = await axiosInstance.post("/profile/setup", {
 				images: profileSetup.images.map((item: any) => ({ path: item.path })),
 				bio: profileSetup.bio,
 				interests: profileSetup.selectedInterests,
@@ -80,6 +80,7 @@ export const profileSetup: any = createAsyncThunk(
 				username: profileSetup.username.val,
 				birthday: profileSetup.birthday,
 			});
+			return response.data
 		}
 		return Promise.reject("insufficient data");
 	},
