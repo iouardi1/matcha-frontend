@@ -86,30 +86,34 @@
 /* styling messages */
 .conv .conv-era .conversation-history {
     height: 88%;
+    width: 100%;
     padding: 20px;
     overflow-y: auto;
     background-color: #1e1d1d;
+    display: flex;
+    flex-direction: column; /* Stack messages vertically */
+    gap: 10px; 
 }
 
 .conv .conv-era .conversation-history .message {
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
-    max-width: 70%;
+    max-width: 60%;
+    display: inline-block; /* Keeps messages as block elements */
+    word-break: break-word; /* Breaks long words */
+    overflow-wrap: break-word;
+
 }
 
 .conv .conv-era .conversation-history .message.user {
-    background-color: #4f4f4f;
-    align-self: flex-end;
-    justify-content: flex-end; /* Flexes the content inside the message to the right */
-    margin-left: auto; /* Pushes the message to the right side */
+    background-color: #2e2e2e;
+    align-self: flex-end;  /* Pushes the message to the right side */
 }
 
 .conv .conv-era .conversation-history .message.match {
-    background-color: #2e2e2e;
+    background: linear-gradient(90deg, rgba(253,85,100,1) 0%, rgba(239,74,117,1) 50%, rgba(244,69,116,1) 80%);
     align-self: flex-start;
-    justify-content: flex-start; /* Flexes the content inside the message to the right */
-    margin-left: auto;
 }
 
 .message-input {

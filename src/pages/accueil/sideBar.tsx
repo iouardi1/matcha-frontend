@@ -26,7 +26,7 @@ const SideBar = () => {
         dispatch(getProfile())
         dispatch(getListOfMatches(Profile.id))
         console.log('matches: ', matches)
-    }, [])
+    }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab));
@@ -42,7 +42,7 @@ const SideBar = () => {
 
     const initiateDM = (match_id: string) => {
         if (match_id == conversations.find((c: any) => c.match_id == match_id)) {
-            dispatch(setActiveConversation(match_id));
+            dispatch(setActiveConversation(c.id));
         }
         else {
             const participants = { participant_id: match_id, user_id: Profile.id}
@@ -149,8 +149,6 @@ const SideBar = () => {
                                 >
                                     <img
                                         src={getImage(conversation.photo)}
-                                        // width={65}
-                                        // height={65}
                                         alt="Profile picture"
                                         className="conversation-picture"
                                     />

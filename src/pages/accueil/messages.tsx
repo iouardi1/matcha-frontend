@@ -106,7 +106,7 @@ const Messages = () => {
                     {messages?.map((message: any, index: number) => (
                             <div
                                 key={index}
-                                className={`message ${message.sender_id === Profile.id ? "user" : "match"}`}
+                                className={`message ${message.sender_id == Profile.id ? "user" : "match"}`}
                             >
                                 <p>{message.message_text}</p>
                             </div>
