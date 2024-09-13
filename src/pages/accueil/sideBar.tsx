@@ -34,6 +34,7 @@ const SideBar = () => {
     useEffect(() => {
         dispatch(getProfile())
         dispatch(getListOfMatches(Profile.id))
+        console.log('matches: ', matches)
     }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
@@ -47,17 +48,14 @@ const SideBar = () => {
     }
 
     const initiateDM = (match_id: string) => {
-        if (
-            match_id == conversations.find((c: any) => c.match_id == match_id)
-        ) {
-            dispatch(setActiveConversation(match_id))
-        } else {
-            const participants = {
-                participant_id: match_id,
-                user_id: Profile.id,
-            }
-            dispatch(initiateNewDM(participants))
-            // dispatch(getConversations(Profile.id))
+        if (match_id == conversations.find((c: any) => c.match_id == match_id)) {
+            dispatch(setActiveConversation(c.id));
+        }
+        else {
+            const participants = { participant_id: match_id, user_id: Profile.id}
+            dispatch(initiateNewDM(participants));
+            // dispatch(getConversations(Profile.id));
+            
         }
         dispatch(getConversations(Profile.id));
         dispatch(setTab('messages'));

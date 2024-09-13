@@ -7,6 +7,7 @@
 .sidebarFrame {
     width: 25%;
     min-width: 300px;
+    max-width: 350px;
     height: 100vh;
 }
 
