@@ -6,8 +6,8 @@ export const fetchConversationMessages = createAsyncThunk(
     "conversation/fetchMessages",
     async (conversationId, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`conversations/${conversationId}`);
-            return response.data;
+                const response = await axiosInstance.get(`conversations/fetchMessages/${conversationId}`);
+                return response.data;
         } catch (error: any) {
             if (error.response && error.response.data.message) {
                 return rejectWithValue(error.response.data.message)
@@ -67,7 +67,7 @@ const conversationSlice = createSlice({
             })
             .addCase(fetchConversationMessages.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.payload;
+                state.error = action.error.message;
             });
     },
 });

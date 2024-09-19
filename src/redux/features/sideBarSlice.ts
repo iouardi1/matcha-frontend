@@ -16,33 +16,32 @@ interface Profile {
 }
 
 interface Conversation {
-    id: number
-    conv_id: number
-    match_id: number
-    username: string
-    photo: string
-    last_message: string
-    matchingDate: string
+    id: number;
+    conv_id: number;
+    match_id: number;
+    username: string;
+    photo: string;
+    last_message: string;
+    matchingDate: string;
+    interested_in_relation: string;
 }
 
 interface SideBarState {
-    tab: 'matches' | 'messages'
-    matches: Match[]
-    likes: number
-    conversations: Conversation[]
-    profile: Profile | null
-    activeConversationId: null
-    loading: boolean
-    error: any
+    tab: 'matches' | 'messages';
+    matches: Match[];
+    likes: number;
+    conversations: Conversation[];
+    profile: Profile | null;
+    activeConversationId: null,
+    loading: boolean;
+	error: any;
 }
 
 const initialState: SideBarState = {
     tab: 'matches',
     matches: [],
     likes: 30,
-    conversations: [
-    ],
-    // profile:  { id: 8, username: 'Oussama', profile_picture: profilePath },
+    conversations: [],
     profile: null,
     activeConversationId: null,
     loading: false,
@@ -69,18 +68,16 @@ export const initiateNewDM = createAsyncThunk(
 )
 
 export const getConversations = createAsyncThunk(
-    'getConversations',
-    async (user_id, { rejectWithValue }) => {
+    "getConversations",
+    async (user_id, { rejectWithValue }: any) => {
         try {
-            const response = await axiosInstance.get(
-                `conversations/getAllConversations/${user_id}`
-            )
-            return response.data
+            const response = await axiosInstance.get(`conversations/getAllConversations`);
+            return response.data;
         } catch (error: any) {
-            if (error.response && error.response.data.user_id) {
-                return rejectWithValue(error.response.data.user_id)
+            if (error.response && error.response.data) {
+                return rejectWithValue(error.response.data)
             } else {
-                return rejectWithValue(error.user_id)
+                return rejectWithValue(error)
             }
         }
     }
@@ -116,7 +113,7 @@ export const getProfile = createAsyncThunk(
 
 export const getListOfMatches = createAsyncThunk(
     "getListOfMatches",
-    async (user_id, { rejectWithValue }) => {
+    async (user_id, { rejectWithValue }: any) => {
         try {
             const response = await axiosInstance.get(`profile/getListOfMatches`);
             return response.data;
@@ -182,10 +179,22 @@ const sideBarSlice = createSlice({
             })
             .addCase(getListOfMatches.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log('payload: ', action.payload.data);
                 state.matches = action.payload.data;
+                console.log('getListOfMatches: ', action.payload.data);
             })
             .addCase(getListOfMatches.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(initiateNewDM.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(initiateNewDM.fulfilled, (state, action) => {
+                state.loading = false;
+                state.activeConversationId = action.payload.data.id;
+            })
+            .addCase(initiateNewDM.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

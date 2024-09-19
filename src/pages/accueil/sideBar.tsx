@@ -18,23 +18,28 @@ import { useSocket } from '@/redux/context/SocketContext'
 import Loading from '@/components/ui/loading'
 import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
 import { profileFetch } from '@/redux/features/profileSlice'
+import { ChildProcess } from "child_process"
 
 const SideBar = () => {
-    const dispatch = useDispatch()
-    const activeTab = useSelector((state: any) => state.sideBar.tab)
-    const matches = useSelector((state: any) => state.sideBar.matches)
-    const likes = useSelector((state: any) => state.sideBar.likes)
-    const conversations = useSelector(
-        (state: any) => state.sideBar.conversations
-    )
-    const Profile = useSelector((state: any) => state.sideBar.profile)
-    const socket = useSocket()
-    const loading = useSelector((state: any) => state.profileSetup.loading)
+
+    const dispatch = useDispatch();
+    const activeTab = useSelector((state: any) => state.sideBar.tab);
+    const matches = useSelector((state: any) => state.sideBar.matches);
+    const likes = useSelector((state: any) => state.sideBar.likes);
+    const conversations = useSelector((state: any) => state.sideBar.conversations);
+    const Profile = useSelector((state: any) => state.sideBar.profile);
+    const socket = useSocket();
+    const loading = useSelector((state: any) => state.loading.loading);
+
+
+    const fetchProfile = () => {
+        dispatch(getProfile())
+        dispatch(getListOfMatches())
+        dispatch(getConversations());
+    }
 
     useEffect(() => {
-        dispatch(getProfile())
-        dispatch(getListOfMatches(Profile.id))
-        console.log('matches: ', matches)
+        fetchProfile();
     }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
@@ -48,18 +53,24 @@ const SideBar = () => {
     }
 
     const initiateDM = (match_id: string) => {
-        if (match_id == conversations.find((c: any) => c.match_id == match_id)) {
-            dispatch(setActiveConversation(c.id));
+        const Conv =  conversations.find((c: any) => c.match_id == match_id)
+        if (Conv) {
+            dispatch(setActiveConversation(Conv.id));
         }
         else {
             const participants = { participant_id: match_id, user_id: Profile.id}
             dispatch(initiateNewDM(participants));
-            // dispatch(getConversations(Profile.id));
             
         }
-        dispatch(getConversations(Profile.id));
         dispatch(setTab('messages'));
+        dispatch(getConversations());
     };
+
+    if (loading || !Profile) {
+        return (
+            <Loading/>
+        )
+    }
 
     return (
         <div className="sidebar">
@@ -142,7 +153,7 @@ const SideBar = () => {
                                     alt=""
                                     className="match-picture"
                                 />
-                                <p className="match-name">{match.name}</p>
+                                <p className="match-name">{match.username}</p>
                             </button>
                         ))}
                     </div>
