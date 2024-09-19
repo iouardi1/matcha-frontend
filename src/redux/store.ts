@@ -6,6 +6,7 @@ import profileSetupReducer from './features/profileSetupSlice'
 enableMapSet();
 
 import loginReducer from './features/loginSlice'
+import loadingReducer from './features/loadingSlice'
 import registerReducer from './features/registerSlice'
 import sendVerificationCodeReducer from './features/sendVerificationCodeSlice'
 import verifyCodeUserReducer from './features/verifyCodeUserSlice'
@@ -28,6 +29,7 @@ export const store = configureStore({
     layout: layoutReducer,
     conversation: conversationReducer,
     socket: socketReducer,
+    loading: loadingReducer,
   },
 })
 

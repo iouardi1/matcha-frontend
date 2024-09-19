@@ -1,42 +1,43 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import match1 from "@/utils/pictures/woman1.jpeg"
-import match2 from "@/utils/pictures/woman2.jpeg"
-import match3 from "@/utils/pictures/woman3.jpeg"
-import match4 from "@/utils/pictures/woman4.jpeg"
-import profilePath from "@/utils/pictures/person.jpg"
-import { axiosInstance } from '@/_axios/instance';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import match1 from '@/utils/pictures/woman1.jpeg'
+import match2 from '@/utils/pictures/woman2.jpeg'
+import match3 from '@/utils/pictures/woman3.jpeg'
+import match4 from '@/utils/pictures/woman4.jpeg'
+import profilePath from '@/utils/pictures/person.jpg'
+import { axiosInstance } from '@/_axios/instance'
+import { startLoading, stopLoading } from './loadingSlice'
 
 interface Match {
-    id: number;
-    name: string;
-    profilePicture: any;
+    id: number
+    name: string
+    profilePicture: any
 }
 
 interface Profile {
-    id: number;
-    username: string;
-    profile_picture: any;
+    id: number
+    username: string
+    profile_picture: any
 }
 
 interface Conversation {
-    id: number;
-    conv_id: number;
-    match_id: number;
-    username: string;
-    photo: string;
-    last_message: string;
-    matchingDate: string;
+    id: number
+    conv_id: number
+    match_id: number
+    username: string
+    photo: string
+    last_message: string
+    matchingDate: string
 }
 
 interface SideBarState {
-    tab: 'matches' | 'messages';
-    matches: Match[];
-    likes: number;
-    conversations: Conversation[];
-    profile: Profile;
-    activeConversationId: null,
-    loading: boolean;
-	error: any;
+    tab: 'matches' | 'messages'
+    matches: Match[]
+    likes: number
+    conversations: Conversation[]
+    profile: Profile
+    activeConversationId: null
+    loading: boolean
+    error: any
 }
 
 const initialState: SideBarState = {
@@ -51,21 +52,23 @@ const initialState: SideBarState = {
         // { id: 7, name: 'Match 7', profilePicture: match4 },
     ],
     likes: 30,
-    conversations: [
-    ],
+    conversations: [],
     // profile:  { id: 8, username: 'Oussama', profile_picture: profilePath },
-    profile: {id: 8, username: 'Oussama', profile_picture: profilePath},
+    profile: { id: 8, username: 'Oussama', profile_picture: profilePath },
     activeConversationId: null,
     loading: false,
-	error: null,
-};
+    error: null,
+}
 
 export const initiateNewDM = createAsyncThunk(
-    "initiateNewDM",
+    'initiateNewDM',
     async (participants, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.post(`conversations/initiateNewDM`, participants);
-            return response.data;
+            const response = await axiosInstance.post(
+                `conversations/initiateNewDM`,
+                participants
+            )
+            return response.data
         } catch (error: any) {
             if (error.response && error.response.data.participants) {
                 return rejectWithValue(error.response.data.participants)
@@ -74,14 +77,16 @@ export const initiateNewDM = createAsyncThunk(
             }
         }
     }
-);
+)
 
 export const getConversations = createAsyncThunk(
-    "getConversations",
+    'getConversations',
     async (user_id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`conversations/getAllConversations/${user_id}`);
-            return response.data;
+            const response = await axiosInstance.get(
+                `conversations/getAllConversations/${user_id}`
+            )
+            return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
                 return rejectWithValue(error.response.data.user_id)
@@ -90,15 +95,26 @@ export const getConversations = createAsyncThunk(
             }
         }
     }
-);
+)
+
+export const getTest: any = createAsyncThunk(
+    'getProfileTest',
+    async (arg, { dispatch }) => {
+        dispatch(startLoading())
+        const response = await axiosInstance.get(`/conversations`)
+        if (!response.data.shouldRedirect) {
+            dispatch(stopLoading())
+        }
+        return response.data
+    }
+)
 
 export const getProfile = createAsyncThunk(
-    "getProfileInfos",
+    'getProfileInfos',
     async (user_id, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`profile/getProfileInfos`);
-            // console.log(response.data)
-            return response.data;
+            const response = await axiosInstance.get(`profile/getProfileInfos`)
+            return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
                 return rejectWithValue(error.response.data.user_id)
@@ -107,58 +123,63 @@ export const getProfile = createAsyncThunk(
             }
         }
     }
-);
+)
 
 const sideBarSlice = createSlice({
     name: 'sideBar',
     initialState,
     reducers: {
         setTab(state, action: PayloadAction<'matches' | 'messages'>) {
-            state.tab = action.payload;
+            state.tab = action.payload
         },
         setActiveConversation(state, action) {
-            state.activeConversationId = action.payload;
-          },
-          updateLastMessage: (state, action) => {
-            const { conversationId, message_text } = action.payload;
+            state.activeConversationId = action.payload
+        },
+        updateLastMessage: (state, action) => {
+            const { conversationId, message_text } = action.payload
             const conversation = state.conversations.find(
-              (conv) => conv.id === conversationId
-            );
+                (conv) => conv.id === conversationId
+            )
             if (conversation) {
-              conversation.last_message = message_text;
+                conversation.last_message = message_text
             }
-          },
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(getConversations.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.loading = true
+                state.error = null
             })
             .addCase(getConversations.fulfilled, (state, action) => {
-                state.loading = false;
-                state.conversations = action.payload.data;
+                state.loading = false
+                state.conversations = action.payload.data
             })
             .addCase(getConversations.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
+                state.loading = false
+                state.error = action.error.message
             })
             .addCase(getProfile.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.loading = true
+                state.error = null
             })
             .addCase(getProfile.fulfilled, (state, action) => {
-                state.loading = false;
-                state.profile = action.payload.data;
+                state.loading = false
+                state.profile = action.payload.data
             })
             .addCase(getProfile.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
+                state.loading = false
+                state.error = action.error.message
+            })
+            .addCase(getTest.pending, (state, action) => {
+                state.loading = true
+            })
+            .addCase(getTest.fulfilled, (state, action) => {
+                state.loading = false
             })
     },
-});
+})
 
-
-export const { setTab, setActiveConversation, updateLastMessage } = sideBarSlice.actions;
-export default sideBarSlice.reducer;
-
+export const { setTab, setActiveConversation, updateLastMessage } =
+    sideBarSlice.actions
+export default sideBarSlice.reducer

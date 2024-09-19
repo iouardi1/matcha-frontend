@@ -14,11 +14,11 @@ import Loading from "@/components/ui/loading";
 export default function setup() {
 	const dispatch = useDispatch();
 	const error = useSelector((state: any) => state.profileSetup.error);
-	const loading = useSelector((state: any) => state.profileSetup.loading);
+  const loading = useSelector((state: any) => state.loading.loading);
 
 	useEffect(() => {
 		dispatch(profileInit())
-	}, [])
+	}, [dispatch])
 
 	if(loading)
 		return <Loading/>

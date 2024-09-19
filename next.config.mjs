@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
     API: process.env.API,
     BACKEND_LOCAL_DEV: process.env.BACKEND_LOCAL_DEV,

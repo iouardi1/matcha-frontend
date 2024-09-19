@@ -7,7 +7,8 @@ import Loading from "@/components/ui/loading";
 export default function Profile() {
 	const dispatch = useDispatch();
 	const profile = useSelector((state: any) => state.profile.data);
-	const loading = useSelector((state: any) => state.profile.loading);
+  const loading = useSelector((state: any) => state.loading.loading);
+
 
 	useEffect(() => {
 		dispatch(profileFetch());
