@@ -119,6 +119,7 @@ const Messages = () => {
                         <div ref={conversationEndRef} />
                     </div>
                 <div className="message-input">
+                    <button className="send-button" onClick={handleSendMessage}>Send</button>
                     <input
                         type="text"
                         value={newMessage}
@@ -126,7 +127,6 @@ const Messages = () => {
                         placeholder="Type a message..."
                         onKeyDown={handleKeyDown}
                     />
-                    <button className="send-button" onClick={handleSendMessage}>Send</button>
                 </div>
             </div>
                 <div className="profile">

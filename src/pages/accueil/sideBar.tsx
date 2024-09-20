@@ -44,7 +44,7 @@ const SideBar = () => {
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab))
-        dispatch(getConversations(Profile.id))
+        dispatch(getConversations())
     }
 
     const handleConversationClick = (id: string) => {
@@ -55,6 +55,7 @@ const SideBar = () => {
     const initiateDM = (match_id: string) => {
         const Conv =  conversations.find((c: any) => c.match_id == match_id)
         if (Conv) {
+            console.log('conv: ', Conv);
             dispatch(setActiveConversation(Conv.id));
         }
         else {
@@ -66,7 +67,7 @@ const SideBar = () => {
         dispatch(getConversations());
     };
 
-    if (loading || !Profile) {
+    if (loading) {
         return (
             <Loading/>
         )

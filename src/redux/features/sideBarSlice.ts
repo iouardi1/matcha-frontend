@@ -50,12 +50,14 @@ const initialState: SideBarState = {
 
 export const initiateNewDM = createAsyncThunk(
     'initiateNewDM',
-    async (participants, { rejectWithValue }) => {
+    async (participants, { rejectWithValue, dispatch }) => {
         try {
+            dispatch(startLoading())
             const response = await axiosInstance.post(
                 `conversations/initiateNewDM`,
                 participants
             )
+            dispatch(stopLoading())
             return response.data
         } catch (error: any) {
             if (error.response && error.response.data.participants) {
@@ -180,7 +182,7 @@ const sideBarSlice = createSlice({
             .addCase(getListOfMatches.fulfilled, (state, action) => {
                 state.loading = false;
                 state.matches = action.payload.data;
-                console.log('getListOfMatches: ', action.payload.data);
+                console.log('getListOfMatches: ', state.matches);
             })
             .addCase(getListOfMatches.rejected, (state, action) => {
                 state.loading = false;
