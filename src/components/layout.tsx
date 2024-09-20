@@ -9,9 +9,11 @@ import { useSocket } from '@/redux/context/SocketContext'
 import { getConversations, getTest } from '@/redux/features/sideBarSlice'
 import Loading from './ui/loading'
 
+
 export default function Layout({ children }) {
     const loading = useSelector((state: any) => state.loading.loading)
-    const activeTab = useSelector((state: any) => state.sideBar.tab)
+    // const loading = useSelector((state: any) => state.sideBar.loading);
+  const activeTab = useSelector((state: any) => state.sideBar.tab)
 
     const dispatch = useDispatch()
     useEffect(() => {

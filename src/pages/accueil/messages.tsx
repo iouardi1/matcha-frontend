@@ -7,6 +7,9 @@ import { addNewMessages, fetchConversationMessages } from "@/redux/features/conv
 import { useSocket } from "@/redux/context/SocketContext";
 import { getConversations, updateLastMessage } from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
+import locationIcon from "@/utils/pictures/location-icon.png"
+import heartIcon from "@/utils/pictures/heart-icon.png"
+import Loading from "@/components/ui/loading";
 
 const Messages = () => {
     const dispatch = useDispatch();
@@ -23,6 +26,7 @@ const Messages = () => {
     const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
+        console.log('active: ', activeConversationId);
         if (activeConversationId) {
             dispatch(fetchConversationMessages(activeConversationId));
 
@@ -71,20 +75,20 @@ const Messages = () => {
         }
     };
 
+   
+
     return (
-        activeConversationId && (
+        activeConversationId && activeConversation && (
             <div className="conv">
                 <div className="conv-era">
                     <div className="header">
                         <div className="userInfos">
-                            <Image
-                                src={getImage(activeConversation.photo)}
-                                width={65}
-                                height={65}
+                            <img
+                                src={getImage(activeConversation?.photo)}
                                 alt=""
                                 className="userPicture"
                             />
-                            <p> You matched with {activeConversation.username} on {activeConversation.matchingDate}</p>
+                            <p> You matched with {activeConversation?.username} on {activeConversation?.matchingDate}</p>
                         </div>
                         <div className="conv-settings">
                         <Image
@@ -106,7 +110,7 @@ const Messages = () => {
                     {messages?.map((message: any, index: number) => (
                             <div
                                 key={index}
-                                className={`message ${message.sender_id === Profile.id ? "user" : "match"}`}
+                                className={`message ${message.sender_id == Profile.id ? "user" : "match"}`}
                             >
                                 <p>{message.message_text}</p>
                             </div>
@@ -115,6 +119,7 @@ const Messages = () => {
                         <div ref={conversationEndRef} />
                     </div>
                 <div className="message-input">
+                    <button className="send-button" onClick={handleSendMessage}>Send</button>
                     <input
                         type="text"
                         value={newMessage}
@@ -122,11 +127,39 @@ const Messages = () => {
                         placeholder="Type a message..."
                         onKeyDown={handleKeyDown}
                     />
-                    <button className="send-button" onClick={handleSendMessage}>Send</button>
                 </div>
             </div>
                 <div className="profile">
-                    <p>here</p>
+                    <div className="pictures">
+                        <img
+                            src={getImage(activeConversation.photo)}
+                            alt=""
+                            className="match-picture"
+                        />
+                    </div>
+                    <div className="bio">
+                        <div className="name-age">
+                            <p className="username">{activeConversation.username} 25</p>
+                            <div className="location">
+                                <Image
+                                    src={locationIcon}
+                                    alt=""
+                                    className="location-icon"
+                                    /> 
+                                <p id="location">93 kilometres away</p>
+                            </div>
+                        </div>
+                        <div className="intrested-in-relation">
+                            <div className="tag">
+                                <Image
+                                    src={heartIcon}
+                                    alt=""
+                                    className="heart-icon"
+                                    /> 
+                                <p>Looking for {activeConversation.interested_in_relation}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

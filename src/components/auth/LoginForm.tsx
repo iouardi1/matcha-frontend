@@ -68,7 +68,7 @@ const LoginForm = () => {
                 resetForm();
                 Cookies.set('accessToken', data?.token, { expires: 7, secure: true });
 							  toast.success('login successful!');
-                router.push('/profile');
+                router.push('/accueil');
               }
             } catch (error: any) {
               toast.error(error);

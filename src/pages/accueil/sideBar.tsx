@@ -7,7 +7,7 @@ import settingPath from '@/utils/pictures/icons8-setting-final.png'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     getConversations,
-    getProfile,
+    getListOfMatches, getProfile,
     initiateNewDM,
     setActiveConversation,
     setTab,
@@ -18,26 +18,33 @@ import { useSocket } from '@/redux/context/SocketContext'
 import Loading from '@/components/ui/loading'
 import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
 import { profileFetch } from '@/redux/features/profileSlice'
+import { ChildProcess } from "child_process"
 
 const SideBar = () => {
-    const dispatch = useDispatch()
-    const activeTab = useSelector((state: any) => state.sideBar.tab)
-    const matches = useSelector((state: any) => state.sideBar.matches)
-    const likes = useSelector((state: any) => state.sideBar.likes)
-    const conversations = useSelector(
-        (state: any) => state.sideBar.conversations
-    )
-    const Profile = useSelector((state: any) => state.sideBar.profile)
-    const socket = useSocket()
-    const loading = useSelector((state: any) => state.profileSetup.loading)
+
+    const dispatch = useDispatch();
+    const activeTab = useSelector((state: any) => state.sideBar.tab);
+    const matches = useSelector((state: any) => state.sideBar.matches);
+    const likes = useSelector((state: any) => state.sideBar.likes);
+    const conversations = useSelector((state: any) => state.sideBar.conversations);
+    const Profile = useSelector((state: any) => state.sideBar.profile);
+    const socket = useSocket();
+    const loading = useSelector((state: any) => state.loading.loading);
+
+
+    const fetchProfile = () => {
+        dispatch(getProfile())
+        dispatch(getListOfMatches())
+        dispatch(getConversations());
+    }
 
     useEffect(() => {
-        dispatch(getProfile())
+        fetchProfile();
     }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab))
-        dispatch(getConversations(Profile.id))
+        dispatch(getConversations())
     }
 
     const handleConversationClick = (id: string) => {
@@ -46,19 +53,24 @@ const SideBar = () => {
     }
 
     const initiateDM = (match_id: string) => {
-        if (
-            match_id == conversations.find((c: any) => c.match_id == match_id)
-        ) {
-            dispatch(setActiveConversation(match_id))
-        } else {
-            const participants = {
-                participant_id: match_id,
-                user_id: Profile.id,
-            }
-            dispatch(initiateNewDM(participants))
-            dispatch(getConversations(Profile.id))
+        const Conv =  conversations.find((c: any) => c.match_id == match_id)
+        if (Conv) {
+            console.log('conv: ', Conv);
+            dispatch(setActiveConversation(Conv.id));
         }
-        dispatch(setTab('messages'))
+        else {
+            const participants = { participant_id: match_id, user_id: Profile.id}
+            dispatch(initiateNewDM(participants));
+            
+        }
+        dispatch(setTab('messages'));
+        dispatch(getConversations());
+    };
+
+    if (loading) {
+        return (
+            <Loading/>
+        )
     }
 
     return (
@@ -67,12 +79,14 @@ const SideBar = () => {
                 <div className="profile-info">
                     <button>
                         <img
-                            src={getImage(Profile.profile_picture)}
+                            src={getImage(Profile?.profile_picture)}
                             alt=""
                             className="picture"
                         />
                     </button>
-                    <span className="username">{Profile.username}</span>
+                    <span className="username">
+                    {Profile?.username}
+                    </span>
                 </div>
                 <div className="icons">
                     <button>
@@ -129,18 +143,18 @@ const SideBar = () => {
                             />
                             <p className="likes-count">{likes} likes</p>
                         </div>
-                        {matches.map((match: any) => (
+                        {matches.length > 0 && matches?.map((match: any) => (
                             <button
                                 key={match.id}
                                 className="match"
                                 onClick={() => initiateDM(match.id)}
-                            >
-                                <Image
-                                    src={match.profilePicture}
+                                >
+                                <img
+                                    src={getImage(match.profile_picture)}
                                     alt=""
                                     className="match-picture"
                                 />
-                                <p className="match-name">{match.name}</p>
+                                <p className="match-name">{match.username}</p>
                             </button>
                         ))}
                     </div>
