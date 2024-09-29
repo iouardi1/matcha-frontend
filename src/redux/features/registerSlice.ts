@@ -3,10 +3,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 export interface registerState {
-	loading: boolean;
+	  loading: boolean;
     userInfo: any;
     userToken: any;
-	error: any;
+	  error: any;
     success: boolean;
 	// data: [];
 }

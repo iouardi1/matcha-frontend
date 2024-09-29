@@ -182,7 +182,7 @@ const sideBarSlice = createSlice({
             .addCase(getListOfMatches.fulfilled, (state, action) => {
                 state.loading = false;
                 state.matches = action.payload.data;
-                console.log('getListOfMatches: ', state.matches);
+                // console.log('getListOfMatches: ', state.matches);
             })
             .addCase(getListOfMatches.rejected, (state, action) => {
                 state.loading = false;

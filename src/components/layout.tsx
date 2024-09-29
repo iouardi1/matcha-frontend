@@ -4,16 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import styles from '@/styles/Layout.module.css'
 import Messages from '@/pages/accueil/messages'
 import { useEffect } from 'react'
-import { setSocket } from '@/redux/features/socketSlice'
-import { useSocket } from '@/redux/context/SocketContext'
+// import { setSocket } from '@/redux/features/socketSlice'
+// import { useSocket } from '@/redux/context/SocketContext'
 import { getConversations, getTest } from '@/redux/features/sideBarSlice'
 import Loading from './ui/loading'
-
 
 export default function Layout({ children }) {
     const loading = useSelector((state: any) => state.loading.loading)
     // const loading = useSelector((state: any) => state.sideBar.loading);
-  const activeTab = useSelector((state: any) => state.sideBar.tab)
+    const activeTab = useSelector((state: any) => state.sideBar.tab)
 
     const dispatch = useDispatch()
     useEffect(() => {
