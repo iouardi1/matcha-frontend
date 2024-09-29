@@ -15,6 +15,7 @@ import sideBarReducer from './features/sideBarSlice'
 import layoutReducer from './features/layoutSlice'
 import conversationReducer from './features/conversationSlice'
 import socketReducer from './features/socketSlice'
+import locationRedudcer from './features/locationSlice'
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
     conversation: conversationReducer,
     socket: socketReducer,
     loading: loadingReducer,
+    location: locationRedudcer,
   },
 })
 

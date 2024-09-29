@@ -53,7 +53,7 @@ const resetPasswordForm = () => {
                 const data = await unwrapResult(resultAction);
                 if (data) {
                   toast.success(data.message);
-                  router.push('./login');
+                  router.push('./verifyEmail');
                 }
               } catch (error: any) {
                 toast.error(error);

@@ -14,7 +14,7 @@ import {
 } from '@/redux/features/sideBarSlice'
 import { useEffect } from 'react'
 import { getImage } from '@/utils/helpers/functions'
-import { useSocket } from '@/redux/context/SocketContext'
+// import { useSocket } from '@/redux/context/SocketContext'
 import Loading from '@/components/ui/loading'
 import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
 import { profileFetch } from '@/redux/features/profileSlice'
@@ -28,7 +28,7 @@ const SideBar = () => {
     const likes = useSelector((state: any) => state.sideBar.likes);
     const conversations = useSelector((state: any) => state.sideBar.conversations);
     const Profile = useSelector((state: any) => state.sideBar.profile);
-    const socket = useSocket();
+    // const socket = useSocket();
     const loading = useSelector((state: any) => state.loading.loading);
 
 
@@ -39,7 +39,9 @@ const SideBar = () => {
     }
 
     useEffect(() => {
+        // socket?.emit("hello", "world");
         fetchProfile();
+        // return () => { socket?.disconnect() }
     }, [dispatch])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {

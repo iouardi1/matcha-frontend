@@ -26,7 +26,6 @@ const Messages = () => {
     const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        console.log('active: ', activeConversationId);
         if (activeConversationId) {
             dispatch(fetchConversationMessages(activeConversationId));
 
@@ -35,7 +34,7 @@ const Messages = () => {
             socket?.on('message received', (message: any) => {
                 dispatch(addNewMessages(message));
                 dispatch(updateLastMessage(message));
-                // dispatch(getConversations(Profile.id)); a revoir
+                // dispatch(getConversations(Profile.id));
             });
         }
 
