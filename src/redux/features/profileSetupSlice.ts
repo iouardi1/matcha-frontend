@@ -20,14 +20,17 @@ export interface profileSetupState {
     }
     intrestedIn: string
     genderList: string[]
+    relatioshipsList: string[]
     birthday: string
     loading: boolean
+    relation: string
 }
 
 const initialState: profileSetupState = {
     images: [],
     bio: '',
-    genderList: ['Man', 'Woman'],
+    genderList: [],
+    relatioshipsList: [],
     imagesPlaceHolders: [
         { id: 'placeholder-1' },
         { id: 'placeholder-2' },
@@ -35,13 +38,14 @@ const initialState: profileSetupState = {
         { id: 'placeholder-4' },
         { id: 'placeholder-5' },
     ],
-    interests: ['Music', 'Travel', 'Sport', 'Movies', 'Art', 'Technology'],
+    interests: [],
     selectedInterests: [],
     error: {
         message: '',
         exists: false,
     },
     gender: '',
+    relation: '',
     username: {
         initVal: null,
         val: '',
@@ -54,8 +58,10 @@ const initialState: profileSetupState = {
 function verifyData(data: any) {
     if (
         data.images.length < 1 ||
-        data.bio.length === '' ||
-        data.selectedInterests < 3
+        data.selectedInterests < 3 ||
+        data.gender === '' ||
+        data.username === '' ||
+        data.relation === ''
     )
         return false
     return true
@@ -87,9 +93,14 @@ export const profileSetup: any = createAsyncThunk(
                 interests: profileSetup.selectedInterests,
                 gender: profileSetup.gender,
                 intrestedIn: profileSetup.intrestedIn,
-                username: profileSetup.username.val,
+                username:
+                    profileSetup.username.initVal === null
+                        ? profileSetup.username.val
+                        : profileSetup.username.initVal,
                 birthday: profileSetup.birthday,
+                relation: profileSetup.relation,
             })
+
             return response.data
         }
         return Promise.reject('insufficient data')
@@ -130,60 +141,109 @@ export const deleteFile: any = createAsyncThunk(
     }
 )
 
+export const populate: any = createAsyncThunk(
+    'profile/populate',
+    async (data: any, { rejectWithValue, dispatch }) => {
+        try {
+            const response = await axiosInstance.get('/profile/setupData')
+            console.log(response.data)
+            return response.data
+        } catch (error: any) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
 export const profileSetupSlice = createSlice({
     name: 'profileSetup',
     initialState,
     reducers: {
-        // Image actions
         addImage(state, action) {
             state.images.push(action.payload)
             state.imagesPlaceHolders.pop()
         },
+
         deleteImage(state, id: PayloadAction<number>) {
             removeByAttr(state.images, 'id', id.payload)
             state.imagesPlaceHolders.push({
                 id: `placeholde-${state.imagesPlaceHolders.length + 1}`,
             })
         },
+
         profileImage(state, id: PayloadAction<number>) {
             let index = findByAttr(state.images, 'id', id.payload)
             state.images[index].isProfilePic = !state.images[index].isProfilePic
         },
-        // Bio actions
+
         changeBio(state, bio: PayloadAction<string>) {
             state.bio = bio.payload
         },
-        // Interest actions
+
         addSelectedInterest(state, interest: PayloadAction<any>) {
             if (!state.selectedInterests.includes(interest.payload)) {
                 state.selectedInterests.push(interest.payload)
             }
         },
+
         deleteSelectedInterest(state, interest: PayloadAction<any>) {
             state.selectedInterests = state.selectedInterests.filter((i) => {
                 return i !== interest.payload
             })
         },
+
         changeErrorProps(state) {
             state.error.exists = false
         },
+
         changeGenderValue(state, gender: PayloadAction<any>) {
             state.gender = gender.payload
             if (gender.payload === 'Man') state.intrestedIn = 'Woman'
             else state.intrestedIn = 'Man'
         },
+
+        changeRelationValue(state, relation: PayloadAction<any>) {
+            state.relation = relation.payload
+        },
+
         setBirthday(state, birthday: PayloadAction<any>) {
             if (birthday.payload) {
-                // var timestamp = Date.parse(birthday.payload);
-                var dateObject: any = new Date(birthday.payload)
+                const dateObject: any = new Date(birthday.payload)
                 if (!isNaN(dateObject)) {
-                    state.birthday = birthday.payload
+                    const today = new Date()
+                    const age = today.getFullYear() - dateObject.getFullYear()
+                    const monthDiff = today.getMonth() - dateObject.getMonth()
+                    const dayDiff = today.getDate() - dateObject.getDate()
+
+                    if (
+                        (age > 18 ||
+                            (age === 18 &&
+                                (monthDiff > 0 ||
+                                    (monthDiff === 0 && dayDiff >= 0)))) &&
+                        (age < 100 ||
+                            (age === 100 &&
+                                (monthDiff < 0 ||
+                                    (monthDiff === 0 && dayDiff <= 0))))
+                    ) {
+                        state.birthday = birthday.payload
+                    } else if (age < 18) {
+                        state.error.exists = true
+                        state.error.message =
+                            'User must be at least 18 years old'
+                        state.birthday = ''
+                    } else {
+                        state.error.exists = true
+                        state.error.message =
+                            'User must be younger than 100 years old'
+                        state.birthday = ''
+                    }
                 } else {
                     state.error.exists = true
-                    state.error.message = 'invalide Date'
+                    state.error.message = 'Invalid Date'
+                    state.birthday = ''
                 }
             }
         },
+
         setUsername(state, username: PayloadAction<any>) {
             if (!state.username.initVal) {
                 state.username.val = username.payload
@@ -206,7 +266,18 @@ export const profileSetupSlice = createSlice({
             })
             .addCase(profileInit.fulfilled, (state, action) => {
                 state.username.initVal = action.payload.username
+                state.genderList = action.payload.genders
+                state.interests = action.payload.interests
+                state.relatioshipsList = action.payload.relationships
                 state.loading = false
+            })
+            .addCase(populate.pending, (state, action) => {
+                state.loading = true
+            })
+            .addCase(populate.fulfilled, (state, action) => {
+                state.genderList = action.payload.genders
+                state.interests = action.payload.interests
+                state.relatioshipsList = action.payload.relationships
             })
     },
 })
@@ -215,11 +286,12 @@ export const {
     addImage,
     deleteImage,
     profileImage,
-    changeBio,
     addSelectedInterest,
     deleteSelectedInterest,
     changeErrorProps,
     changeGenderValue,
+    changeBio,
+    changeRelationValue,
     setBirthday,
     setUsername,
 } = profileSetupSlice.actions

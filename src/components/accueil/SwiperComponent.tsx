@@ -5,13 +5,24 @@ import Swiper from './utils/Swiper' // Adjust the path as needed
 import Card from './Card'
 import Button from './Button'
 import { IconHeartFilled, IconX } from '@tabler/icons-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getListOfMatches } from '@/redux/features/sideBarSlice'
+import { match } from 'assert'
+import { getImage } from '@/utils/helpers/functions'
 const SwiperComponent = () => {
-    const [cards, setCards] = useState([...Array(20).keys()])
+    const [cards, setCards] = useState<any>([])
     const [centerX, setCenterX] = useState<any>()
     const [swipeDirection, setSwipeDirection] = useState<any>(null)
     const [hoverLike, setHoverLike] = useState(false)
     const [hoverDislike, setHoverDislike] = useState(false)
     const cardRef = useRef(null)
+    const dispatch = useDispatch()
+    const matches = useSelector((state: any) => state.sideBar.matches)
+
+    useEffect(() => {
+        setCards([...matches])
+        console.log(matches)
+    }, [matches, dispatch])
 
     const remove = () => {
         setCards(cards.slice(1))
@@ -63,9 +74,9 @@ const SwiperComponent = () => {
                                             name={'dislike'}
                                             className={`${
                                                 swipeDirection === 'left'
-                                                    ? 'bg-[#f59794]'
+                                                    ? 'bg-[#f59795]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59794] hover:bg-[#f59794] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59795] hover:bg-[#f59795] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeLeft}
                                             callbacks={{
                                                 setHoverDislike,
@@ -78,7 +89,7 @@ const SwiperComponent = () => {
                                                     color={
                                                         hoverDislike == true
                                                             ? 'white'
-                                                            : '#f59794'
+                                                            : '#f59795'
                                                     }
                                                 />
                                             )}
@@ -86,10 +97,10 @@ const SwiperComponent = () => {
                                         <Button
                                             name={'like'}
                                             className={`${
-                                                (swipeDirection === 'right')
-                                                    ? 'bg-[#20dab5]'
+                                                swipeDirection === 'right'
+                                                    ? 'bg-[#20dab4]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab5] hover:bg-[#20dab5] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab4] hover:bg-[#20dab4] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeRight}
                                             callbacks={{
                                                 setHoverLike,
@@ -102,7 +113,7 @@ const SwiperComponent = () => {
                                                     color={
                                                         hoverLike == true
                                                             ? 'white'
-                                                            : '#20dab5'
+                                                            : '#20dab4'
                                                     }
                                                 />
                                             )}
@@ -117,7 +128,7 @@ const SwiperComponent = () => {
                                         swipeDirection == 'right'
                                             ? 'visible'
                                             : 'hidden'
-                                    } bg-[#20dab5]  absolute left-[20px] top-[20px] z-10 w-[60px] h-[30px] text-center text-xl text uppercase font-bold text-white rounded-[5px]`}
+                                    } bg-[#20dab4]  absolute left-[20px] top-[20px] z-10 w-[60px] h-[30px] text-center text-xl text uppercase font-bold text-white rounded-[5px]`}
                                 >
                                     like
                                 </div>
@@ -126,11 +137,31 @@ const SwiperComponent = () => {
                                         swipeDirection == 'left'
                                             ? 'visible'
                                             : 'hidden'
-                                    } bg-[#f59794] absolute right-[20px] top-[20px] z-10 w-[80px] h-[30px] text-center text-xl text uppercase font-bold text-white	rounded-[5px] `}
+                                    } bg-[#f59795] absolute right-[20px] top-[20px] z-10 w-[80px] h-[30px] text-center text-xl text uppercase font-bold text-white	rounded-[5px] `}
                                 >
                                     dislike
                                 </div>
-                                {cards[0]}
+
+                                <div className="w-full h-full items-end text-black font-bold capitalize bg-opacity-80 p-2 text-center z-10 flex">
+                                    <div>
+                                        <p>Famerate</p>
+                                    </div>
+                                    <div>
+                                        <p>{cards[0].username}</p>
+                                        <span>&nbsp;,</span>
+                                        <p>{cards[0].id}</p>
+                                    </div>
+                                </div>
+
+                                <img
+                                    onDragStart={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }}
+                                    src={getImage(cards[0].profile_picture)}
+                                    alt="userprofile"
+                                    className="object-cover w-full h-full rounded-[15px] absolute"
+                                />
                             </Card>
                         </Swipeable>
                         {cards.length > 1 && (
@@ -138,7 +169,9 @@ const SwiperComponent = () => {
                         )}
                     </div>
                 )}
-                {cards.length <= 1 && <Card zIndex={-2}>No more cards</Card>}
+                {cards.length <= 1 && (
+                    <Card zIndex={-2}>No more suggestions</Card>
+                )}
             </div>
         </div>
     )

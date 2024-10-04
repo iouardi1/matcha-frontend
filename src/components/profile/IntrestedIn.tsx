@@ -11,9 +11,9 @@ export default function IntrestedIn() {
 	const genderList = useSelector((state: any) => state.profileSetup.genderList);
 
 	return (
-		<div className="px-4 mt-5">
-			<div className="mx-auto max-w-xl flex">
-				<label className="block text-sm font-medium leading-6 text-white min-w-[100px]">
+		<div className="px-4 mt-2">
+			<div className="mx-auto max-w-xl flex  items-center">
+				<label className="block text-[12px] sm:text-[15px] font-medium leading-6 text-white min-w-[100px]">
 					Intrested In
 				</label>
 				<RadioGroup value={IntrestedIn} className="w-full flex justify-start">
@@ -23,13 +23,13 @@ export default function IntrestedIn() {
 								disabled
 								key={item}
 								value={item}
-								className={`group relative flex cursor-pointer rounded-full h-10 bg-white/5 py-4 px-5 text-white mx-3 border ${
-									IntrestedIn === item ? "border-indigo-500" : ""
+								className={`group relative flex cursor-pointer rounded-full h-[10px] bg-white/5 py-[12px] px-[12px] sm:py-[15px] sm:px-[15px]  text-white mx-3 border ${
+									IntrestedIn === item ? "border-[#fd5564]" : ""
 								}`}
 							>
 								<div className="flex w-full items-center justify-between">
 									<div className="text-sm/6">
-										<p className="font-semibold text-white">{item}</p>
+										<p className="font-semibold text-white text-[10px] sm:text-[15px]">{item}</p>
 									</div>
 									<IconCheck
 										className={IntrestedIn === item ? "visible" : "hidden"}

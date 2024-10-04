@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import { getConversations, getTest } from '@/redux/features/sideBarSlice'
 import Loading from './ui/loading'
 
-export default function Layout({ children }) {
+export default function Layout({ children }: any) {
     const loading = useSelector((state: any) => state.loading.loading)
     // const loading = useSelector((state: any) => state.sideBar.loading);
     const activeTab = useSelector((state: any) => state.sideBar.tab)
