@@ -22,10 +22,10 @@ export default function setup() {
     const dispatch = useDispatch()
     const error = useSelector((state: any) => state.profileSetup.error)
     const loading = useSelector((state: any) => state.loading.loading)
+    const username = useSelector((state: any) => state.profileSetup.username)
 
     useEffect(() => {
         dispatch(profileInit())
-        dispatch(populate())
     }, [dispatch])
 
     if (loading) return <Loading />
@@ -39,6 +39,9 @@ export default function setup() {
                 <div className="h-4/6 sm:h-[90%] mt-4">
                     <Formik
                         initialValues={{ bio: '' }}
+                        context={{
+                            isUsernameEditable: username.initVal === null,
+                        }}
                         validationSchema={profileSetupSchema}
                         onSubmit={(values) => {
                             dispatch(profileSetup())

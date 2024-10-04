@@ -3,9 +3,7 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import { IconCheck } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeGenderValue } from '@/redux/features/profileSetupSlice'
-type ValuePiece = Date | null
 
-type Value = ValuePiece | [ValuePiece, ValuePiece]
 export default function Gender() {
     const dispatch = useDispatch()
     const gender = useSelector((state: any) => state.profileSetup.gender)
@@ -37,7 +35,7 @@ export default function Gender() {
                                     <div className="text-sm/6">
                                         <p className="font-semibold text-white text-[10px] sm:text-[15px]">
                                             {item}
-                                        </p>
+                                        </p>    
                                     </div>
                                     <IconCheck
                                         className={
