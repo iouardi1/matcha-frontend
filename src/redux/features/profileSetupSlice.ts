@@ -146,7 +146,6 @@ export const populate: any = createAsyncThunk(
     async (data: any, { rejectWithValue, dispatch }) => {
         try {
             const response = await axiosInstance.get('/profile/setupData')
-            console.log(response.data)
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response.data)

@@ -16,7 +16,6 @@ const initialState: locationState = {
 export const saveLocation = createAsyncThunk("saveLocation", async (location: any, { rejectWithValue }) => {
 	try {
     const response = await axiosInstance.post("location", location );
-    console.log(location);
     return response.data;
   } catch (error: any) {
       if (error.response && error.response.data.message) {
@@ -56,7 +55,6 @@ const locationSlice = createSlice({
       .addCase(getLocation.fulfilled, (state, action) => {
         state.loading = false;
         state.location = action.payload;
-        console.log('location gotten: ', state.location);
       })
       .addCase(getLocation.rejected, (state, action) => {
         state.loading = false;

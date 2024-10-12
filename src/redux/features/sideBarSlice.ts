@@ -99,15 +99,15 @@ export const getTest: any = createAsyncThunk(
 
 export const getProfile = createAsyncThunk(
     'getProfileInfos',
-    async (user_id, { rejectWithValue }) => {
+    async (user_id, { rejectWithValue }: any) => {
         try {
             const response = await axiosInstance.get(`profile/getProfileInfos`);
             return response.data;
         } catch (error: any) {
-            if (error.response && error.response.data.user_id) {
-                return rejectWithValue(error.response.data.user_id)
+            if (error.response && error.response.data) {
+                return rejectWithValue(error.response.data)
             } else {
-                return rejectWithValue(error.user_id)
+                return rejectWithValue(error)
             }
         }
     }
@@ -170,6 +170,7 @@ const sideBarSlice = createSlice({
             .addCase(getProfile.fulfilled, (state, action) => {
                 state.loading = false
                 state.profile = action.payload.data
+                console.log('profile: ', state.profile);
             })
             .addCase(getProfile.rejected, (state, action) => {
                 state.loading = false;
@@ -182,7 +183,7 @@ const sideBarSlice = createSlice({
             .addCase(getListOfMatches.fulfilled, (state, action) => {
                 state.loading = false;
                 state.matches = action.payload.data;
-                // console.log('getListOfMatches: ', state.matches);
+                console.log('getListOfMatches: ', state.matches);
             })
             .addCase(getListOfMatches.rejected, (state, action) => {
                 state.loading = false;

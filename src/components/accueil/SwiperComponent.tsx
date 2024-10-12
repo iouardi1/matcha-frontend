@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Swipeable from 'react-swipy'
 import Swiper from './utils/Swiper' // Adjust the path as needed
-
 import Card from './Card'
 import Button from './Button'
 import { IconHeartFilled, IconX } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getListOfMatches } from '@/redux/features/sideBarSlice'
-import { match } from 'assert'
 import { getImage } from '@/utils/helpers/functions'
+// import { swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
+
 const SwiperComponent = () => {
     const [cards, setCards] = useState<any>([])
     const [centerX, setCenterX] = useState<any>()
@@ -21,7 +21,6 @@ const SwiperComponent = () => {
 
     useEffect(() => {
         setCards([...matches])
-        console.log(matches)
     }, [matches, dispatch])
 
     const remove = () => {
@@ -29,9 +28,9 @@ const SwiperComponent = () => {
     }
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
-            console.log('User swiped right')
+            // dispatch(swipeRight(cards[0]))
         } else if (direction === 'left') {
-            console.log('User swiped left')
+            // dispatch(swipeLeft(cards[0]))
         }
     }
 
@@ -74,9 +73,9 @@ const SwiperComponent = () => {
                                             name={'dislike'}
                                             className={`${
                                                 swipeDirection === 'left'
-                                                    ? 'bg-[#f59795]'
+                                                    ? 'bg-[#f59796]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59795] hover:bg-[#f59795] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59796] hover:bg-[#f59796] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeLeft}
                                             callbacks={{
                                                 setHoverDislike,
@@ -89,7 +88,7 @@ const SwiperComponent = () => {
                                                     color={
                                                         hoverDislike == true
                                                             ? 'white'
-                                                            : '#f59795'
+                                                            : '#f59796'
                                                     }
                                                 />
                                             )}
@@ -98,9 +97,9 @@ const SwiperComponent = () => {
                                             name={'like'}
                                             className={`${
                                                 swipeDirection === 'right'
-                                                    ? 'bg-[#20dab4]'
+                                                    ? 'bg-[#20dab5]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab4] hover:bg-[#20dab4] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab5] hover:bg-[#20dab5] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeRight}
                                             callbacks={{
                                                 setHoverLike,
@@ -113,7 +112,7 @@ const SwiperComponent = () => {
                                                     color={
                                                         hoverLike == true
                                                             ? 'white'
-                                                            : '#20dab4'
+                                                            : '#20dab5'
                                                     }
                                                 />
                                             )}
@@ -128,7 +127,7 @@ const SwiperComponent = () => {
                                         swipeDirection == 'right'
                                             ? 'visible'
                                             : 'hidden'
-                                    } bg-[#20dab4]  absolute left-[20px] top-[20px] z-10 w-[60px] h-[30px] text-center text-xl text uppercase font-bold text-white rounded-[5px]`}
+                                    } bg-[#20dab5]  absolute left-[20px] top-[20px] z-10 w-[60px] h-[30px] text-center text-xl text-uppercase font-bold text-white rounded-[5px]`}
                                 >
                                     like
                                 </div>
@@ -137,19 +136,22 @@ const SwiperComponent = () => {
                                         swipeDirection == 'left'
                                             ? 'visible'
                                             : 'hidden'
-                                    } bg-[#f59795] absolute right-[20px] top-[20px] z-10 w-[80px] h-[30px] text-center text-xl text uppercase font-bold text-white	rounded-[5px] `}
+                                    } bg-[#f59796] absolute right-[20px] top-[20px] z-10 w-[80px] h-[30px] text-center text-xl text-uppercase font-bold text-white rounded-[5px] `}
                                 >
                                     dislike
                                 </div>
 
-                                <div className="w-full h-full items-end text-black font-bold capitalize bg-opacity-80 p-2 text-center z-10 flex">
-                                    <div>
+                                <div className="w-full h-[20%] items-start text-white font-bold capitalize p-2 text-center z-10 flex flex-col-reverse bg-black bg-opacity-10">
+                                    <div className="flex font-extrabold text-base ">
                                         <p>Famerate</p>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <p>10</p>
                                     </div>
-                                    <div>
-                                        <p>{cards[0].username}</p>
-                                        <span>&nbsp;,</span>
-                                        <p>{cards[0].id}</p>
+                                    <div className="flex font-extrabold text-2xl">
+                                        <p className="">{cards[0].username}</p>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <p>{cards[0].id}</p>{' '}
+                                        {/* replace id with age */}
                                     </div>
                                 </div>
 
@@ -164,8 +166,27 @@ const SwiperComponent = () => {
                                 />
                             </Card>
                         </Swipeable>
+
                         {cards.length > 1 && (
-                            <Card zIndex={-1}>{cards[1]}</Card>
+                            <Card zIndex={-1}>
+                                <div className="w-full h-[20%] items-start text-white font-bold capitalize p-2 text-center z-10 flex flex-col-reverse bg-black bg-opacity-10">
+                                    <div className="flex font-extrabold text-2xl">
+                                        <p className="">{cards[1].username}</p>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <p>{cards[1].id}</p>{' '}
+                                        {/* replace id with age */}
+                                    </div>
+                                </div>
+                                <img
+                                    onDragStart={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }}
+                                    src={getImage(cards[1].profile_picture)}
+                                    alt="userprofile"
+                                    className="object-cover w-full h-full rounded-[15px] absolute"
+                                />
+                            </Card>
                         )}
                     </div>
                 )}
