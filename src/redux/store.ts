@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { enableMapSet } from 'immer';
+import { enableMapSet } from 'immer'
 import profileReducer from './features/profileSlice'
 import profileSetupReducer from './features/profileSetupSlice'
 
-enableMapSet();
+enableMapSet()
 
 import loginReducer from './features/loginSlice'
 import loadingReducer from './features/loadingSlice'
@@ -16,23 +16,25 @@ import layoutReducer from './features/layoutSlice'
 import conversationReducer from './features/conversationSlice'
 import socketReducer from './features/socketSlice'
 import locationRedudcer from './features/locationSlice'
+import swipeRedudcer from './features/swipeSlice'
 
 export const store = configureStore({
-  reducer: {
-    profile: profileReducer,
-    profileSetup: profileSetupReducer,
-    login: loginReducer,
-    register: registerReducer,
-    sendVerificationCode: sendVerificationCodeReducer,
-    verifyCodeUser: verifyCodeUserReducer,
-    resetPassword: resetPasswordUserReducer,
-    sideBar: sideBarReducer,
-    layout: layoutReducer,
-    conversation: conversationReducer,
-    socket: socketReducer,
-    loading: loadingReducer,
-    location: locationRedudcer,
-  },
+    reducer: {
+        profile: profileReducer,
+        profileSetup: profileSetupReducer,
+        login: loginReducer,
+        register: registerReducer,
+        sendVerificationCode: sendVerificationCodeReducer,
+        verifyCodeUser: verifyCodeUserReducer,
+        resetPassword: resetPasswordUserReducer,
+        sideBar: sideBarReducer,
+        layout: layoutReducer,
+        conversation: conversationReducer,
+        socket: socketReducer,
+        loading: loadingReducer,
+        location: locationRedudcer,
+        swipe: swipeRedudcer,
+    },
 })
 
 export type RootState = ReturnType<typeof store.getState>

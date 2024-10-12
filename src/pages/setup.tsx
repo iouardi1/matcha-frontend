@@ -17,6 +17,7 @@ import Loading from '@/components/ui/loading'
 import Relationships from '@/components/profile/Relationships'
 import { Form, Formik } from 'formik'
 import { profileSetupSchema } from '@/validations/profileSetup'
+import Location from '@/components/profile/Location'
 
 export default function setup() {
     const dispatch = useDispatch()
@@ -31,6 +32,7 @@ export default function setup() {
     if (loading) return <Loading />
     return (
         <>
+            <Location/>
             <Modal error={error} />
             <div className="w-full m-auto hidden justify-center sm:flex">
                 <h1 className="font-bold text-xl">Create Account</h1>

@@ -1,13 +1,12 @@
-import { axiosInstance } from '@/_axios/instance'
 import {
     getLocation,
     saveLocation,
     setLocation,
 } from '@/redux/features/locationSlice'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-function App() {
+export default function Location() {
     const dispatch = useDispatch()
     const { location } = useSelector((state: any) => state.location)
 
@@ -23,6 +22,7 @@ function App() {
                 (error) => {
                     if (error.code === error.PERMISSION_DENIED) {
                         dispatch(getLocation())
+                        console.log('location: ', location)
                     } else if (error.code === error.POSITION_UNAVAILABLE) {
                         console.error('Location information is unavailable.')
                     } else if (error.code === error.TIMEOUT) {
@@ -38,22 +38,10 @@ function App() {
             console.error('Geolocation is not supported by this browser.')
         }
     }
-    
+
     useEffect(() => {
         manageUserLocation()
     }, [dispatch])
 
-    return (
-        <div>
-            <button onClick={manageUserLocation}>Get User Location</button>
-            {location && (
-                <div>
-                    <h2>User Location</h2>
-                    <p>location: {location}</p>
-                </div>
-            )}
-        </div>
-    )
+    return <></>
 }
-
-export default App

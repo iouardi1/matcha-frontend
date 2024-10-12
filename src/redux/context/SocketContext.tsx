@@ -1,27 +1,34 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { io, Socket } from 'socket.io-client'
+import Cookies from 'js-cookie'
 
-const SocketContext = createContext<Socket | null>(null);
+const SocketContext = createContext<Socket | null>(null)
 
 export const useSocket = () => {
-  return useContext(SocketContext);
-};
+    return useContext(SocketContext)
+}
 
-export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState<Socket | null>(null);
+export const SocketProvider = ({ children }: any) => {
+    const [socket, setSocket] = useState<Socket | null>(null)
+    // const [token, setToken] = useState<string | null>(null)
+    useEffect(() => {
+        const token = Cookies.get('accessToken')
 
-  useEffect(() => {
-        const newSocket = io(`${process.env.BACKEND_LOCAL_DEV}`);
-        setSocket(newSocket);
-        
+        const newSocket = io(`${process.env.BACKEND_LOCAL_DEV}`, {
+            auth: {
+                token: token,
+            },
+        })
+        setSocket(newSocket)
+
         return () => {
-            newSocket.close();
-        };
-    }, []);
-    
-  return (
-    <SocketContext.Provider value={socket}>
-      {children}
-    </SocketContext.Provider>
-  );
-};
+            newSocket.close()
+        }
+    }, [])
+
+    return (
+        <SocketContext.Provider value={socket}>
+            {children}
+        </SocketContext.Provider>
+    )
+}

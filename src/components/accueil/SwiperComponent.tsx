@@ -7,7 +7,7 @@ import { IconHeartFilled, IconX } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getListOfMatches } from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
-// import { swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
+import { swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
 
 const SwiperComponent = () => {
     const [cards, setCards] = useState<any>([])
@@ -28,9 +28,9 @@ const SwiperComponent = () => {
     }
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
-            // dispatch(swipeRight(cards[0]))
+            dispatch(swipeRight(cards[0]))
         } else if (direction === 'left') {
-            // dispatch(swipeLeft(cards[0]))
+            dispatch(swipeLeft(cards[0]))
         }
     }
 
