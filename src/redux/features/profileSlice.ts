@@ -19,7 +19,6 @@ export const profileFetch: any = createAsyncThunk(
     async (arg, { dispatch }) => {
             dispatch(startLoading())
             const response = await axiosInstance.get('/profile')
-            // console.log(response.data.shouldRedirect);
             if (!response.data.shouldRedirect) {
               dispatch(stopLoading())
             }

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import profilePath from '/Users/macos/Desktop/matcha-backend/uploads/1725296132754.jpeg'
+import defaultImage from '/Users/macos/Desktop/matcha-front/src/utils/pictures/woman1.jpeg'
 import blurred from '@/utils/pictures/blurred.png'
 import searchPath from '@/utils/pictures/icons8-search-final.png'
 import premiumPath from '@/utils/pictures/icons8-premium-final.png'
@@ -57,7 +58,6 @@ const SideBar = () => {
     const initiateDM = (match_id: string) => {
         const Conv =  conversations.find((c: any) => c.match_id == match_id)
         if (Conv) {
-            console.log('conv: ', Conv);
             dispatch(setActiveConversation(Conv.id));
         }
         else {
@@ -147,16 +147,16 @@ const SideBar = () => {
                         </div>
                         {matches.length > 0 && matches?.map((match: any) => (
                             <button
-                                key={match.id}
+                                key={match?.id}
                                 className="match"
-                                onClick={() => initiateDM(match.id)}
+                                onClick={() => initiateDM(match?.id)}
                                 >
                                 <img
-                                    src={getImage(match.profile_picture)}
+                                    src={getImage(match?.profile_picture)}
                                     alt=""
                                     className="match-picture"
                                 />
-                                <p className="match-name">{match.username}</p>
+                                <p className="match-name">{match?.username}</p>
                             </button>
                         ))}
                     </div>
@@ -164,14 +164,14 @@ const SideBar = () => {
                     <div className="messages-content">
                         {conversations.map((conversation: any) => (
                             <button
-                                key={conversation.id}
+                                key={conversation?.id}
                                 className="conversation"
                                 onClick={() =>
-                                    handleConversationClick(conversation.id)
+                                    handleConversationClick(conversation?.id)
                                 }
                             >
                                 <img
-                                    src={getImage(conversation.photo)}
+                                    src={getImage(conversation?.photo)}
                                     // width={65}
                                     // height={65}
                                     alt="Profile picture"
@@ -179,11 +179,11 @@ const SideBar = () => {
                                 />
                                 <div className="conv-details">
                                     <p className="name">
-                                        {conversation.username}
+                                        {conversation?.username}
                                     </p>
                                     <p className="last-message">
-                                        {conversation.last_message
-                                            ? conversation.last_message
+                                        {conversation?.last_message
+                                            ? conversation?.last_message
                                             : '--- ---'}
                                     </p>
                                 </div>

@@ -6,7 +6,6 @@ export const fetchConversationMessages = createAsyncThunk(
     "conversation/fetchMessages",
     async (conversationId, { rejectWithValue }) => {
         try {
-                console.log('activeConversationId: ', conversationId);
                 const response = await axiosInstance.get(`conversations/fetchMessages/${conversationId}`);
                 return response.data;
         } catch (error: any) {

@@ -45,7 +45,11 @@ export const generateId = function () {
 }
 
 export const getImage = (path) => {
-    // console.log(path)
-    if (path)
-			 return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`
-}
+    if (!path) return null;
+
+    if (path.startsWith("http")) {
+        return path;
+    }
+
+    return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`;
+};

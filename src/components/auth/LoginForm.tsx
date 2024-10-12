@@ -74,7 +74,6 @@ const LoginForm = () => {
                                     expires: 7,
                                     secure: true,
                                 })
-                                console.log('data: ', data)
                                 toast.success('login successful!')
                                 router.push('/accueil')
                             }

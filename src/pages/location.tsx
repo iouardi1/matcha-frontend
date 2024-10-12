@@ -23,7 +23,6 @@ function App() {
                 (error) => {
                     if (error.code === error.PERMISSION_DENIED) {
                         dispatch(getLocation())
-                        console.log('location: ', location)
                     } else if (error.code === error.POSITION_UNAVAILABLE) {
                         console.error('Location information is unavailable.')
                     } else if (error.code === error.TIMEOUT) {
