@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
     getConversations,
     getListOfMatches,
+    getListOfPotentialMatches,
     getProfile,
     initiateNewDM,
     setActiveConversation,
@@ -37,6 +38,7 @@ const SideBar = () => {
     const fetchProfile = () => {
         dispatch(getProfile())
         dispatch(getListOfMatches())
+        dispatch(getListOfPotentialMatches())
         dispatch(getConversations())
     }
 
