@@ -9,6 +9,16 @@ interface Match {
     profile_picture: any;
 }
 
+interface PotentialMatch {
+    id: number;
+    username: string;
+    birthday: string;
+    location: string;
+    distance: string;
+    gender: string;
+    profile_picture: any;
+}
+
 interface Profile {
     id: number
     username: string
@@ -29,6 +39,7 @@ interface Conversation {
 interface SideBarState {
     tab: 'matches' | 'messages';
     matches: Match[];
+    potentialMatch: PotentialMatch[];
     likes: number;
     conversations: Conversation[];
     profile: Profile | null;
@@ -40,6 +51,7 @@ interface SideBarState {
 const initialState: SideBarState = {
     tab: 'matches',
     matches: [],
+    potentialMatch: [],
     likes: 30,
     conversations: [],
     profile: null,
@@ -128,6 +140,21 @@ export const getListOfMatches = createAsyncThunk(
         }
     }
 )
+export const getListOfPotentialMatches = createAsyncThunk(
+    "getListOfPotentialMatches",
+    async (user_id, { rejectWithValue }: any) => {
+        try {
+            const response = await axiosInstance.get(`filterMatches`);
+            return response.data;
+        } catch (error: any) {
+            if (error.response && error.response.data.user_id) {
+                return rejectWithValue(error.response.data.user_id)
+            } else {
+                return rejectWithValue(error.user_id)
+            }
+        }
+    }
+)
 
 const sideBarSlice = createSlice({
     name: 'sideBar',
@@ -184,7 +211,21 @@ const sideBarSlice = createSlice({
                 state.loading = false;
                 state.matches = action.payload.data;
             })
+            
             .addCase(getListOfMatches.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(getListOfPotentialMatches.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
+                state.loading = false;
+                state.potentialMatch = action.payload.matches;
+                console.log(' state.potentialMatch: ',  state.potentialMatch);
+            })
+            .addCase(getListOfPotentialMatches.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

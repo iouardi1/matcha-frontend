@@ -17,7 +17,7 @@ const SwiperComponent = () => {
     const [hoverDislike, setHoverDislike] = useState(false)
     const cardRef = useRef(null)
     const dispatch = useDispatch()
-    const matches = useSelector((state: any) => state.sideBar.matches)
+    const matches = useSelector((state: any) => state.sideBar.potentialMatch)
 
     useEffect(() => {
         setCards([...matches])
