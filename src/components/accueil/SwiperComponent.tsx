@@ -7,7 +7,7 @@ import { IconHeartFilled, IconX } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getListOfMatches } from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
-import { swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
+import { blockUser, swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
 
 const SwiperComponent = () => {
     const [cards, setCards] = useState<any>([])
@@ -32,6 +32,12 @@ const SwiperComponent = () => {
         } else if (direction === 'left') {
             dispatch(swipeLeft(cards[0]))
         }
+        remove()  // Remove the blocked user from the list
+    }
+
+    const handleBlock = () => {
+        dispatch(blockUser(cards[0]))  // Dispatch the block action
+        remove()  // Remove the blocked user from the list
     }
 
     const handlemouse = (e: any) => {
@@ -117,6 +123,13 @@ const SwiperComponent = () => {
                                                 />
                                             )}
                                         </Button>
+                                        <Button
+                                            name={'block'}
+                                            className="bg-red-600 text-white w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer"
+                                            onClick={handleBlock}
+                                        >
+                                            Block
+                                        </Button>
                                     </div>
                                 )
                             }}
@@ -150,7 +163,7 @@ const SwiperComponent = () => {
                                     <div className="flex font-extrabold text-2xl">
                                         <p className="">{cards[0].username}</p>
                                         <span>&nbsp;&nbsp;</span>
-                                        <p>{cards[0].id}</p>{' '}
+                                        <p>{cards[0].age}</p>{' '}
                                         {/* replace id with age */}
                                     </div>
                                 </div>
@@ -173,7 +186,7 @@ const SwiperComponent = () => {
                                     <div className="flex font-extrabold text-2xl">
                                         <p className="">{cards[1].username}</p>
                                         <span>&nbsp;&nbsp;</span>
-                                        <p>{cards[1].id}</p>{' '}
+                                        <p>{cards[1].age}</p>{' '}
                                         {/* replace id with age */}
                                     </div>
                                 </div>
