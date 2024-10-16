@@ -5,9 +5,14 @@ import Card from './Card'
 import Button from './Button'
 import { IconHeartFilled, IconX } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getListOfMatches } from '@/redux/features/sideBarSlice'
+import {
+    createNotification,
+    getListOfMatches,
+    getListOfNotifications,
+} from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
 import { swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
+import { useSocket } from '@/redux/context/SocketContext'
 
 const SwiperComponent = () => {
     const [cards, setCards] = useState<any>([])
@@ -18,6 +23,7 @@ const SwiperComponent = () => {
     const cardRef = useRef(null)
     const dispatch = useDispatch()
     const matches = useSelector((state: any) => state.sideBar.potentialMatch)
+    const socket = useSocket()
 
     useEffect(() => {
         setCards([...matches])
@@ -29,8 +35,25 @@ const SwiperComponent = () => {
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
             dispatch(swipeRight(cards[0]))
+            socket?.emit('send notif', {
+                notifType: 'like',
+                user: cards[0].email,
+            })
+            dispatch(
+                createNotification({ notifType: 'like', user: cards[0].email })
+            )
         } else if (direction === 'left') {
             dispatch(swipeLeft(cards[0]))
+            socket?.emit('send notif', {
+                notifType: 'dislike',
+                user: cards[0].email,
+            })
+            dispatch(
+                createNotification({
+                    notifType: 'dislike',
+                    user: cards[0].email,
+                })
+            )
         }
     }
 
