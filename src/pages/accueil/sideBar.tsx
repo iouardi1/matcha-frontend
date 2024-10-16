@@ -2,13 +2,14 @@ import Image from 'next/image'
 import profilePath from '/Users/macos/Desktop/matcha-backend/uploads/1725296132754.jpeg'
 import defaultImage from '/Users/macos/Desktop/matcha-front/src/utils/pictures/woman1.jpeg'
 import blurred from '@/utils/pictures/blurred.png'
-import searchPath from '@/utils/pictures/icons8-search-final.png'
-import premiumPath from '@/utils/pictures/icons8-premium-final.png'
-import settingPath from '@/utils/pictures/icons8-setting-final.png'
+import settingPath from '@/utils/pictures/icons8-adjust-50.png'
+import notifPath from '@/utils/pictures/icons8-notification-50.png'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    addNotif,
     getConversations,
     getListOfMatches,
+    getListOfNotifications,
     getProfile,
     initiateNewDM,
     setActiveConversation,
@@ -21,47 +22,54 @@ import Loading from '@/components/ui/loading'
 import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
 import { profileFetch } from '@/redux/features/profileSlice'
 import { useSocket } from '@/redux/context/SocketContext'
+import NotifItem from '@/components/notifs/NotifItem'
 
 const SideBar = () => {
     const dispatch = useDispatch()
     const activeTab = useSelector((state: any) => state.sideBar.tab)
     const matches = useSelector((state: any) => state.sideBar.matches)
     const likes = useSelector((state: any) => state.sideBar.likes)
+    const notifs = useSelector((state: any) => state.sideBar.notifications)
     const conversations = useSelector(
         (state: any) => state.sideBar.conversations
     )
     const Profile = useSelector((state: any) => state.sideBar.profile)
-    const notifSocket = useSocket();
+    const notifSocket = useSocket()
     const loading = useSelector((state: any) => state.loading.loading)
 
     const fetchProfile = () => {
         dispatch(getProfile())
         dispatch(getListOfMatches())
         dispatch(getConversations())
+        dispatch(getListOfNotifications())
     }
 
     const [notif, setNotif] = useState(false)
-    const [show, setShow] = useState(false)
+    const [showNotif, setShowNotif] = useState(false)
+    const [showFilter, setShowFilter] = useState(false)
+
     const handleNotif = () => {
-        setShow(!show)
+        setShowNotif(!showNotif)
         if (notif) setNotif(false)
     }
 
+    const handleFilters = () => {
+        setShowFilter(!showFilter)
+    }
     useEffect(() => {
         fetchProfile()
     }, [dispatch])
 
-    // useEffect notif 
-    useEffect(() =>{
-        notifSocket?.on("notif received", () => {
-            console.log('notif');
+    // useEffect notif
+    useEffect(() => {
+        notifSocket?.on('notif received', (notif) => {
+            dispatch(addNotif(notif))
+            setNotif(true)
         })
-
         return () => {
-            notifSocket?.off('notif received');
-        };
-    },[notif])
-
+            notifSocket?.off('notif received')
+        }
+    }, [notif])
 
     const handleButtonClick = (tab: 'matches' | 'messages') => {
         dispatch(setTab(tab))
@@ -76,12 +84,13 @@ const SideBar = () => {
     const initiateDM = (match_id: string) => {
         const Conv = conversations.find((c: any) => c.match_id == match_id)
         if (Conv) {
-            dispatch(setActiveConversation(Conv.id));
-        }
-        else {
-            const participants = { participant_id: match_id, user_id: Profile.id}
-            dispatch(initiateNewDM(participants));
-            
+            dispatch(setActiveConversation(Conv.id))
+        } else {
+            const participants = {
+                participant_id: match_id,
+                user_id: Profile.id,
+            }
+            dispatch(initiateNewDM(participants))
         }
         dispatch(setTab('messages'))
         dispatch(getConversations())
@@ -105,16 +114,83 @@ const SideBar = () => {
                     <span className="username">{Profile?.username}</span>
                 </div>
                 <div className="icons">
-                    <button>
-                        <Image
-                            src={searchPath}
-                            width={50}
-                            height={50}
-                            alt=""
-                            className="icon1"
-                        />
-                    </button>
-                    <button>
+                    <button
+                        className="relative"
+                        onClick={() => {
+                            handleFilters()
+                        }}
+                    >
+                        <div
+                            className={`${
+                                showFilter ? '' : 'hidden'
+                            } flex flex-col items-center bg-white w-[400px] h-auto p-6 absolute rounded-xl z-20 left-9 top-6 space-y-6`}
+                        >
+                            {/* Age Gap Filter */}
+                            <div className="w-full">
+                                <label className="text-sm font-semibold">
+                                    Age Gap
+                                </label>
+                                <div className="flex justify-between text-xs">
+                                    <span>Min</span>
+                                    <span>Max</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="18"
+                                    max="100"
+                                    step="1"
+                                    className="w-full"
+                                    onChange={(e) =>
+                                        console.log('Age Gap:', e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            {/* Distance Filter */}
+                            <div className="w-full">
+                                <label className="text-sm font-semibold">
+                                    Distance
+                                </label>
+                                <div className="flex justify-between text-xs">
+                                    <span>0 km</span>
+                                    <span>100 km</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    className="w-full"
+                                    onChange={(e) =>
+                                        console.log('Distance:', e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            {/* Frame Rate Filter */}
+                            <div className="w-full">
+                                <label className="text-sm font-semibold">
+                                    Fame Rate
+                                </label>
+                                <div className="flex justify-between text-xs">
+                                    <span>0 </span>
+                                    <span>120</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="120"
+                                    step="1"
+                                    className="w-full"
+                                    onChange={(e) =>
+                                        console.log(
+                                            'Frame Rate:',
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                            </div>
+                        </div>
                         <Image
                             src={settingPath}
                             width={50}
@@ -131,29 +207,23 @@ const SideBar = () => {
                         }}
                     >
                         <div
-                            className={` ${notif ? "" : "hidden"} w-[10px] h-[10px] bg-green-500 rounded-[20px] absolute left-9 -top-1`}
+                            className={` ${
+                                notif ? '' : 'hidden'
+                            } w-[10px] h-[10px] bg-green-500 rounded-[20px] absolute left-9 -top-1`}
                         ></div>
                         <div
                             className={`${
-                                show ? '' : 'hidden'
-                            } flex flex-col items-center bg-white w-[400px] h-[200px] absolute top-6 left-7 rounded-xl`}
+                                showNotif ? '' : 'hidden'
+                            } flex flex-col items-center bg-white w-[400px] h-[200px] absolute top-6 left-7 rounded-xl z-20`}
                         >
                             <div className="h-full w-full">
-                                {/* {notifArr.map((notif: NotifData, key) => {
-                                    if (notif.type === 'game') {
-                                        return (
-                                            <NotifItem
-                                                key={key}
-                                                notif={notif}
-                                                socket={props.socket}
-                                            />
-                                        )
-                                    }
-                                })} */}
+                                {notifs.map((notif: any, key: any) => {
+                                    return <NotifItem notif={notif} key={key} />
+                                })}
                             </div>
                         </div>
                         <Image
-                            src={premiumPath}
+                            src={notifPath}
                             width={50}
                             height={50}
                             alt=""
@@ -187,20 +257,23 @@ const SideBar = () => {
                             />
                             <p className="likes-count">{likes} likes</p>
                         </div>
-                        {matches.length > 0 && matches?.map((match: any) => (
-                            <button
-                                key={match?.id}
-                                className="match"
-                                onClick={() => initiateDM(match?.id)}
+                        {matches.length > 0 &&
+                            matches?.map((match: any) => (
+                                <button
+                                    key={match?.id}
+                                    className="match"
+                                    onClick={() => initiateDM(match?.id)}
                                 >
-                                <img
-                                    src={getImage(match?.profile_picture)}
-                                    alt=""
-                                    className="match-picture"
-                                />
-                                <p className="match-name">{match?.username}</p>
-                            </button>
-                        ))}
+                                    <img
+                                        src={getImage(match?.profile_picture)}
+                                        alt=""
+                                        className="match-picture"
+                                    />
+                                    <p className="match-name">
+                                        {match?.username}
+                                    </p>
+                                </button>
+                            ))}
                     </div>
                 ) : (
                     <div className="messages-content">
