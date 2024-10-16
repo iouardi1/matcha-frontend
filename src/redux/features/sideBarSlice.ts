@@ -4,29 +4,29 @@ import { axiosInstance } from '@/_axios/instance'
 import { startLoading, stopLoading } from './loadingSlice'
 
 interface Match {
-    id: number;
-    username: string;
-    profile_picture: any;
+    id: number
+    username: string
+    profile_picture: any
 }
 
 interface PotentialMatch {
-    id: number;
-    username: string;
-    age: string;
-    location: string;
-    distance: string;
-    gender: string;
-    profile_picture: any;
+    id: number
+    username: string
+    age: string
+    location: string
+    distance: string
+    gender: string
+    profile_picture: any
 }
 
 interface PotentialMatch {
-    id: number;
-    username: string;
-    age: string;
-    location: string;
-    distance: string;
-    gender: string;
-    profile_picture: any;
+    id: number
+    username: string
+    age: string
+    location: string
+    distance: string
+    gender: string
+    profile_picture: any
 }
 
 interface Profile {
@@ -56,7 +56,7 @@ interface SideBarState {
     tab: 'matches' | 'messages'
     matches: Match[]
     notifications: Notification[]
-    potentialMatch: PotentialMatch[];
+    potentialMatch: PotentialMatch[]
     likes: number
     conversations: Conversation[]
     profile: Profile | null
@@ -150,7 +150,7 @@ export const getListOfMatches = createAsyncThunk(
     async (user_id, { rejectWithValue }: any) => {
         try {
             const response = await axiosInstance.get(`profile/getListOfMatches`)
-            return response.data;
+            return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
                 return rejectWithValue(error.response.data.user_id)
@@ -168,7 +168,7 @@ export const getListOfNotifications: any = createAsyncThunk(
             const response = await axiosInstance.get(
                 `profile/getListOfNotifications`
             )
-            // console.log(response.data)
+            // console.log(response.data)=
             return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -199,10 +199,10 @@ export const createNotification: any = createAsyncThunk(
     }
 )
 export const getListOfPotentialMatches = createAsyncThunk(
-    "getListOfPotentialMatches",
+    'getListOfPotentialMatches',
     async (user_id, { rejectWithValue }: any) => {
         try {
-            const response = await axiosInstance.get(`filterMatches`);
+            const response = await axiosInstance.get(`filterMatches`)
             return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -213,7 +213,6 @@ export const getListOfPotentialMatches = createAsyncThunk(
         }
     }
 )
-
 
 // export const getListOfNotifications: any = createAsyncThunk(
 //     'getListOfNotifications',
@@ -252,7 +251,6 @@ export const getListOfPotentialMatches = createAsyncThunk(
 //         }
 //     }
 // )
-
 
 const sideBarSlice = createSlice({
     name: 'sideBar',
@@ -298,7 +296,6 @@ const sideBarSlice = createSlice({
             .addCase(getProfile.fulfilled, (state, action) => {
                 state.loading = false
                 state.profile = action.payload.data
-                console.log('profile: ', state.profile)
             })
             .addCase(getProfile.rejected, (state, action) => {
                 state.loading = false
@@ -309,12 +306,12 @@ const sideBarSlice = createSlice({
                 state.error = null
             })
             .addCase(getListOfMatches.fulfilled, (state, action) => {
-                state.loading = false;
+                state.loading = false
                 state.matches = action.payload.data
             })
-            
+
             .addCase(getListOfMatches.rejected, (state, action) => {
-                state.loading = false;
+                state.loading = false
                 state.error = action.error.message
             })
             .addCase(getListOfNotifications.pending, (state) => {
@@ -326,30 +323,17 @@ const sideBarSlice = createSlice({
                 state.notifications = action.payload.data
             })
             .addCase(getListOfPotentialMatches.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.loading = true
+                state.error = null
             })
             .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
-                state.loading = false;
-                state.potentialMatch = action.payload.matches;
-                console.log(' state.potentialMatch: ',  state.potentialMatch);
+                state.loading = false
+                state.potentialMatch = action.payload.matches
+                console.log(' state.potentialMatch: ', state.potentialMatch)
             })
             .addCase(getListOfPotentialMatches.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
-            })
-            .addCase(getListOfPotentialMatches.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
-                state.loading = false;
-                state.potentialMatch = action.payload.matches;
-                console.log(' state.potentialMatch: ',  state.potentialMatch);
-            })
-            .addCase(getListOfPotentialMatches.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message;
+                state.loading = false
+                state.error = action.error.message
             })
             .addCase(initiateNewDM.pending, (state) => {
                 state.loading = true
