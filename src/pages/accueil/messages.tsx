@@ -10,6 +10,7 @@ import { getImage } from "@/utils/helpers/functions";
 import locationIcon from "@/utils/pictures/location-icon.png"
 import heartIcon from "@/utils/pictures/heart-icon.png"
 import Loading from "@/components/ui/loading";
+import { blockUser } from "@/redux/features/swipeSlice";
 
 const Messages = () => {
     const dispatch = useDispatch();
@@ -51,6 +52,10 @@ const Messages = () => {
             conversationEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
+
+    const handleBlock = () => {
+        dispatch(blockUser(activeConversation))
+    }
     
     
     const handleSendMessage = () => {
@@ -95,11 +100,15 @@ const Messages = () => {
                             alt="Profile picture"
                             className="icon-picture"
                         />
-                        <Image
-                            src={closeIcon}
-                            alt="Profile picture"
-                            className="icon-picture"
-                        />
+                        <button
+                            onClick={handleBlock}
+                        >
+                            <Image
+                                src={closeIcon}
+                                alt="Profile picture"
+                                className="icon-picture"
+                                />
+                            </button>
                         </div>
                         <div>
 

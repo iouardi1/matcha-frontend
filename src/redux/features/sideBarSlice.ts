@@ -12,7 +12,7 @@ interface Match {
 interface PotentialMatch {
     id: number;
     username: string;
-    birthday: string;
+    age: string;
     location: string;
     distance: string;
     gender: string;
