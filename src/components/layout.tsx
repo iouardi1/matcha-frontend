@@ -6,23 +6,23 @@ import Messages from '@/pages/accueil/messages'
 import { useEffect } from 'react'
 // import { setSocket } from '@/redux/features/socketSlice'
 // import { useSocket } from '@/redux/context/SocketContext'
-import { getConversations, getTest } from '@/redux/features/sideBarSlice'
+import { getTest } from '@/redux/features/sideBarSlice'
 import Loading from './ui/loading'
 
 export default function Layout({ children }: any) {
     const loading = useSelector((state: any) => state.loading.loading)
-    // const loading = useSelector((state: any) => state.sideBar.loading);
     const activeTab = useSelector((state: any) => state.sideBar.tab)
+    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible)
 
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getTest())
-    }, [dispatch])
+    }, [dispatch, isSidebarVisible])
 
     if (loading) return <Loading />
     return (
         <div className={styles.container}>
-            <div className={styles.sidebarFrame}>
+            <div className={`${styles.sidebarFrame} ${isSidebarVisible ? `${styles.sidebarVisible}` : ''}`}>
                 <SideBar />
             </div>
             <main className={styles.mainContent}>

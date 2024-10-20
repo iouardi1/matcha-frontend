@@ -1,15 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image"
-import closeIcon from "@/utils/pictures/close-icon.png"
-import convSettings from "@/utils/pictures/conv-settings-icon.png"
+import menuIcon from "@/utils/pictures/icons-menu.png"
 import { useEffect, useRef, useState } from "react";
 import { addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
 import { useSocket } from "@/redux/context/SocketContext";
-import { getConversations, updateLastMessage } from "@/redux/features/sideBarSlice";
+import { getConversations, toggleSidebar, updateLastMessage } from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
 import locationIcon from "@/utils/pictures/location-icon.png"
 import heartIcon from "@/utils/pictures/heart-icon.png"
-import Loading from "@/components/ui/loading";
+import blockIcon from "@/utils/pictures/icons-block.png"
 import { blockUser } from "@/redux/features/swipeSlice";
 
 const Messages = () => {
@@ -22,6 +21,7 @@ const Messages = () => {
     const messages = useSelector((state: any) => state.conversation.activeConversationMessages);
     
     const Profile = useSelector((state: any) => state.sideBar.profile);
+    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible);
     
     const [newMessage, setNewMessage] = useState("");
     const conversationEndRef = useRef<HTMLDivElement | null>(null);
@@ -56,6 +56,10 @@ const Messages = () => {
     const handleBlock = () => {
         dispatch(blockUser(activeConversation))
     }
+
+    const displaySidebar = () => {
+        dispatch(toggleSidebar());
+    };
     
     
     const handleSendMessage = () => {
@@ -86,32 +90,37 @@ const Messages = () => {
             <div className="conv">
                 <div className="conv-era">
                     <div className="header">
+                        <button
+                            onClick={displaySidebar}
+                        >
+                            <Image
+                                src={menuIcon}
+                                alt=""
+                                className="menu-icon"
+                            />
+                        </button>
                         <div className="userInfos">
                             <img
                                 src={getImage(activeConversation?.photo)}
                                 alt=""
                                 className="userPicture"
                             />
-                            <p> You matched with {activeConversation?.username} on {activeConversation?.matchingDate}</p>
+                            <p className="user-details"> 
+                                You matched with {activeConversation?.username} on {activeConversation?.matchingdate}
+                            </p>
                         </div>
                         <div className="conv-settings">
-                        <Image
-                            src={convSettings}
-                            alt="Profile picture"
-                            className="icon-picture"
-                        />
-                        <button
-                            onClick={handleBlock}
-                        >
-                            <Image
-                                src={closeIcon}
-                                alt="Profile picture"
-                                className="icon-picture"
-                                />
-                            </button>
-                        </div>
+                            <button
+                                onClick={handleBlock}
+                            >
+                                <Image
+                                    src={blockIcon}
+                                    alt="Profile picture"
+                                    className="icon-picture"
+                                    />
+                                </button>
+                            </div>
                         <div>
-
                         </div>
                     </div>
                     <div className="conversation-history">
@@ -147,14 +156,14 @@ const Messages = () => {
                     </div>
                     <div className="bio">
                         <div className="name-age">
-                            <p className="username">{activeConversation.username} 25</p>
+                            <p className="username">{activeConversation?.username} {activeConversation?.age} </p>
                             <div className="location">
                                 <Image
                                     src={locationIcon}
                                     alt=""
                                     className="location-icon"
                                     /> 
-                                <p id="location">93 kilometres away</p>
+                                <p id="location">{activeConversation?.distance} km away</p>
                             </div>
                         </div>
                         <div className="intrested-in-relation">
@@ -164,7 +173,7 @@ const Messages = () => {
                                     alt=""
                                     className="heart-icon"
                                     /> 
-                                <p>Looking for {activeConversation.interested_in_relation}</p>
+                                <p>Looking for {activeConversation?.interested_in_relation}</p>
                             </div>
                         </div>
                     </div>
