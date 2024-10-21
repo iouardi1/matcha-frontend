@@ -53,7 +53,7 @@ const conversationSlice = createSlice({
             state.activeConversationMessages = [];
         },
         addNewMessages: (state, action) => {
-            state.activeConversationMessages = [ ...state.activeConversationMessages, action.payload ];
+            state.activeConversationMessages.push(action.payload);
         },
     },
     extraReducers: (builder) => {

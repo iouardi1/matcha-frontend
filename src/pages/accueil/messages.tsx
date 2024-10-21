@@ -21,8 +21,6 @@ const Messages = () => {
     const messages = useSelector((state: any) => state.conversation.activeConversationMessages);
     
     const Profile = useSelector((state: any) => state.sideBar.profile);
-    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible);
-    
     const [newMessage, setNewMessage] = useState("");
     const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,9 +66,12 @@ const Messages = () => {
                 participant_id: Profile.id,
                 message_text: newMessage,
                 conversationId: activeConversationId,
+                sender_id: Profile.id,
             };
 
             socket?.emit('new message', messageData);
+            dispatch(addNewMessages(messageData));
+            dispatch(updateLastMessage(messageData));
 
             setNewMessage("");
         }
