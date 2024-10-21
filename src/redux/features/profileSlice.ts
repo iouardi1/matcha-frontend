@@ -3,33 +3,52 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { startLoading, stopLoading } from './loadingSlice'
 
 export interface profileState {
-    // loading: boolean
+    loading: boolean
     error: any
-    data: []
+    data: any
+    id: number | null
 }
 
 const initialState: profileState = {
-    // loading: false,
+    loading: false,
     error: null,
     data: [],
+    id: null,
 }
 
 export const profileFetch: any = createAsyncThunk(
     'profile/fetch',
     async (arg, { dispatch }) => {
-            dispatch(startLoading())
-            const response = await axiosInstance.get('/profile')
-            if (!response.data.shouldRedirect) {
-              dispatch(stopLoading())
-            }
-            return response.data
+        // dispatch(startLoading())
+        const response = await axiosInstance.get('/profile')
+        if (!response.data.shouldRedirect) {
+            //   dispatch(stopLoading())
+        }
+        return response.data
+    }
+)
+
+export const profileDetailsFetch: any = createAsyncThunk(
+    'profileDetails/fetch',
+    async (arg, { dispatch, getState }: any) => {
+        const id = getState().profile.id
+        // dispatch(startLoading())
+        const response = await axiosInstance.get(`/profile/details?id=${id}`)
+        // if (!response.data.shouldRedirect) {
+        // dispatch(stopLoading())
+        // }
+        return response.data
     }
 )
 
 export const profileSlice = createSlice({
     name: 'profile',
     initialState,
-    reducers: {},
+    reducers: {
+        setId(state, action) {
+            state.id = action.payload
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(profileFetch.pending, (state) => {
@@ -41,9 +60,20 @@ export const profileSlice = createSlice({
             .addCase(profileFetch.rejected, (state, action) => {
                 state.error = action.error.message
             })
+            .addCase(profileDetailsFetch.pending, (state) => {
+                state.error = null
+            })
+            .addCase(profileDetailsFetch.fulfilled, (state, action) => {
+                if (state.data.id !== action.payload.data.id) {
+                    state.data = action.payload.data
+                }
+            })
+            .addCase(profileDetailsFetch.rejected, (state, action) => {
+                state.error = action.error.message
+            })
     },
 })
 
-export const {} = profileSlice.actions
+export const { setId } = profileSlice.actions
 
 export default profileSlice.reducer

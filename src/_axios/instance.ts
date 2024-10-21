@@ -12,11 +12,19 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
+        if (config.url == 'filterMatches') {
+            config.params = {
+                ...(config.params || {}),
+            }
+        }
         const token = Cookies.get('accessToken')
         if (!token) {
             // window.location.href = '/auth/login';
         }
         config.headers.Authorization = `Bearer ${token}`
+        config.params = {
+            ...(config.params || {}),
+        }
         return config
     },
     (error) => {
