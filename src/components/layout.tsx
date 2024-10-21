@@ -8,6 +8,8 @@ import { useEffect } from 'react'
 // import { useSocket } from '@/redux/context/SocketContext'
 import { getTest } from '@/redux/features/sideBarSlice'
 import Loading from './ui/loading'
+import ProfileDetails from '@/pages/accueil/ProfileDetails'
+import Profile from '@/pages/accueil/profile'
 
 export default function Layout({ children }: any) {
     const loading = useSelector((state: any) => state.loading.loading)
@@ -28,6 +30,7 @@ export default function Layout({ children }: any) {
             <main className={styles.mainContent}>
                 {activeTab === 'matches' && <Matches />}
                 {activeTab === 'messages' && <Messages />}
+                {activeTab === 'details' && <Profile />}
                 {activeTab === 'default' && children}
             </main>
         </div>

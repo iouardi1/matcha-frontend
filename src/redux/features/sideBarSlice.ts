@@ -46,7 +46,7 @@ interface Notification {
 }
 
 interface SideBarState {
-    tab: 'matches' | 'messages'
+    tab: 'matches' | 'messages' | 'details'
     matches: Match[]
     notifications: Notification[]
     potentialMatch: PotentialMatch[]
@@ -57,6 +57,7 @@ interface SideBarState {
     loading: boolean
     error: any
     isSidebarVisible: boolean
+    filter: any
 }
 
 const initialState: SideBarState = {
@@ -71,9 +72,15 @@ const initialState: SideBarState = {
     loading: false,
     error: null,
     isSidebarVisible: false,
+    filter: {
+        minAgeGap: null,
+        maxAgeGap: null,
+        distance: null,
+        fameRate: null,
+    },
 }
 
-export const initiateNewDM = createAsyncThunk(
+export const initiateNewDM: any = createAsyncThunk(
     'initiateNewDM',
     async (participants, { rejectWithValue, dispatch }) => {
         try {
@@ -94,7 +101,7 @@ export const initiateNewDM = createAsyncThunk(
     }
 )
 
-export const getConversations = createAsyncThunk(
+export const getConversations: any = createAsyncThunk(
     'getConversations',
     async (user_id, { rejectWithValue }: any) => {
         try {
@@ -124,7 +131,7 @@ export const getTest: any = createAsyncThunk(
     }
 )
 
-export const getProfile = createAsyncThunk(
+export const getProfile: any = createAsyncThunk(
     'getProfileInfos',
     async (user_id, { rejectWithValue }: any) => {
         try {
@@ -140,7 +147,7 @@ export const getProfile = createAsyncThunk(
     }
 )
 
-export const getListOfMatches = createAsyncThunk(
+export const getListOfMatches: any = createAsyncThunk(
     'getListOfMatches',
     async (user_id, { rejectWithValue }: any) => {
         try {
@@ -193,11 +200,22 @@ export const createNotification: any = createAsyncThunk(
         }
     }
 )
-export const getListOfPotentialMatches = createAsyncThunk(
+export const getListOfPotentialMatches: any = createAsyncThunk(
     'getListOfPotentialMatches',
-    async (user_id, { rejectWithValue }: any) => {
+    async (user_id, { rejectWithValue, getState }: any) => {
+        const state = getState().sideBar.filter
+        const params: any = {
+            ...(state.distance && { location: state.distance }),
+            ...(state.minAgeGap !== null &&
+                state.maxAgeGap !== null && {
+                    ageGap: `${state.minAgeGap}-${state.maxAgeGap}`,
+                }),
+            ...(state.fameRate !== null && { fameRate: state.fameRate }),
+        }
         try {
-            const response = await axiosInstance.get(`filterMatches`)
+            const response = await axiosInstance.get(`filterMatches`, {
+                params,
+            })
             return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -209,49 +227,11 @@ export const getListOfPotentialMatches = createAsyncThunk(
     }
 )
 
-// export const getListOfNotifications: any = createAsyncThunk(
-//     'getListOfNotifications',
-//     async (user_id, { rejectWithValue }: any) => {
-//         try {
-//             const response = await axiosInstance.get(
-//                 `profile/getListOfNotifications`
-//             )
-//             // console.log(response.data)
-//             return response.data
-//         } catch (error: any) {
-//             if (error.response && error.response.data.user_id) {
-//                 return rejectWithValue(error.response.data.user_id)
-//             } else {
-//                 return rejectWithValue(error.user_id)
-//             }
-//         }
-//     }
-// )
-
-// export const createNotification: any = createAsyncThunk(
-//     'createNotification',
-//     async (notifData, { rejectWithValue }: any) => {
-//         try {
-//             const response = await axiosInstance.post(
-//                 `profile/createNotification`,
-//                 notifData
-//             )
-//             return response.data
-//         } catch (error: any) {
-//             if (error.response && error.response.data.user_id) {
-//                 return rejectWithValue(error.response.data.user_id)
-//             } else {
-//                 return rejectWithValue(error.user_id)
-//             }
-//         }
-//     }
-// )
-
 const sideBarSlice = createSlice({
     name: 'sideBar',
     initialState,
     reducers: {
-        setTab(state, action: PayloadAction<'matches' | 'messages'>) {
+        setTab(state, action: PayloadAction<'matches' | 'messages' | 'details'>) {
             state.tab = action.payload
         },
         setActiveConversation(state, action) {
@@ -271,6 +251,13 @@ const sideBarSlice = createSlice({
         },
         toggleSidebar: (state) => {
             state.isSidebarVisible = !state.isSidebarVisible;
+        },
+        updateFilter(
+            state,
+            action: PayloadAction<{ attribute: keyof SideBarState; value: any }>
+        ) {
+            const { attribute, value } = action.payload
+            state.filter[attribute] = value
         },
     },
     extraReducers: (builder) => {
@@ -327,7 +314,7 @@ const sideBarSlice = createSlice({
             .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
                 state.loading = false
                 state.potentialMatch = action.payload.matches
-                console.log(' state.potentialMatch: ', state.potentialMatch)
+                // console.log(' state.potentialMatch: ', state.potentialMatch)
             })
             .addCase(getListOfPotentialMatches.rejected, (state, action) => {
                 state.loading = false
@@ -348,6 +335,11 @@ const sideBarSlice = createSlice({
     },
 })
 
-export const { setTab, setActiveConversation, updateLastMessage, addNotif, toggleSidebar } =
-    sideBarSlice.actions
+export const {
+    setTab,
+    setActiveConversation,
+    updateLastMessage,
+    addNotif, toggleSidebar,
+    updateFilter,
+} = sideBarSlice.actions
 export default sideBarSlice.reducer

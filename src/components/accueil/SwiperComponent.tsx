@@ -3,15 +3,20 @@ import Swipeable from 'react-swipy'
 import Swiper from './utils/Swiper' // Adjust the path as needed
 import Card from './Card'
 import Button from './Button'
-import { IconHeartFilled, IconX } from '@tabler/icons-react'
+import { IconHeartFilled, IconX , IconUserCancel } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     createNotification,
     getListOfMatches,
+    setTab,
 } from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
 import { blockUser, swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
 import { useSocket } from '@/redux/context/SocketContext'
+import {
+    IconUserCircle
+  } from "@tabler/icons-react";
+import { setId } from '@/redux/features/profileSlice'
 
 const SwiperComponent = () => {
     const [cards, setCards] = useState<any>([])
@@ -23,7 +28,7 @@ const SwiperComponent = () => {
     const dispatch = useDispatch()
     const matches = useSelector((state: any) => state.sideBar.potentialMatch)
     const socket = useSocket()
-    
+
     useEffect(() => {
         setCards([...matches])
     }, [matches, dispatch])
@@ -33,7 +38,6 @@ const SwiperComponent = () => {
     }
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
-            
             dispatch(swipeRight(cards[0]))
             socket?.emit('send notif', {
                 notifType: 'like',
@@ -101,9 +105,9 @@ const SwiperComponent = () => {
                                             name={'dislike'}
                                             className={`${
                                                 swipeDirection === 'left'
-                                                    ? 'bg-[#f59796]'
+                                                    ? 'bg-[#f59795]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59796] hover:bg-[#f59796] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59795] hover:bg-[#f59795] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeLeft}
                                             callbacks={{
                                                 setHoverDislike,
@@ -125,9 +129,9 @@ const SwiperComponent = () => {
                                             name={'like'}
                                             className={`${
                                                 swipeDirection === 'right'
-                                                    ? 'bg-[#20dab5]'
+                                                    ? 'bg-[#20dab6]'
                                                     : ''
-                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab5] hover:bg-[#20dab5] flex items-center justify-center cursor-pointer`}
+                                            } w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab6] hover:bg-[#20dab6] flex items-center justify-center cursor-pointer`}
                                             onClick={Swiper.swipeRight}
                                             callbacks={{
                                                 setHoverLike,
@@ -147,10 +151,10 @@ const SwiperComponent = () => {
                                         </Button>
                                         <Button
                                             name={'block'}
-                                            className="bg-red-600 text-white w-[50px] h-[50px] rounded-full flex items-center justify-center cursor-pointer"
+                                            className="w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-red-500 hover:bg-red-500 flex items-center justify-center cursor-pointer"
                                             onClick={handleBlock}
                                         >
-                                            Block
+                                            <IconUserCancel color="white"/>
                                         </Button>
                                     </div>
                                 )
@@ -176,17 +180,26 @@ const SwiperComponent = () => {
                                     dislike
                                 </div>
 
-                                <div className="w-full h-[20%] items-start text-white font-bold capitalize p-2 text-center z-10 flex flex-col-reverse bg-black bg-opacity-10">
-                                    <div className="flex font-extrabold text-base ">
-                                        <p>Famerate</p>
-                                        <span>&nbsp;&nbsp;</span>
-                                        <p>10</p>
+                                <div className="w-full h-[20%] justify-between text-white font-bold capitalize p-2 text-center z-10 flex bg-black bg-opacity-10">
+                                    <div className='flex flex-col-reverse items-center'>
+                                        <div className="flex font-extrabold text-base ">
+                                            <p>Famerate</p>
+                                            <span>&nbsp;&nbsp;</span>
+                                            <p>10</p>
+                                        </div>
+                                        <div className="flex font-extrabold text-2xl">
+                                            <p className="">
+                                                {cards[0].username}
+                                            </p>
+                                            <span>&nbsp;&nbsp;</span>
+                                            <p>{cards[0].age}</p>{' '}
+                                        </div>
                                     </div>
-                                    <div className="flex font-extrabold text-2xl">
-                                        <p className="">{cards[0].username}</p>
-                                        <span>&nbsp;&nbsp;</span>
-                                        <p>{cards[0].age}</p>{' '}
-                                        {/* replace id with age */}
+                                    <div className='flex items-center h-full' onClick={() => {
+                                        dispatch(setTab('details'))
+                                        dispatch(setId(cards[0].id))
+                                    }}>
+                                        <IconUserCircle color="#ffffff" size={50}/>
                                     </div>
                                 </div>
 
@@ -209,7 +222,6 @@ const SwiperComponent = () => {
                                         <p className="">{cards[1].username}</p>
                                         <span>&nbsp;&nbsp;</span>
                                         <p>{cards[1].age}</p>{' '}
-                                        {/* replace id with age */}
                                     </div>
                                 </div>
                                 <img
