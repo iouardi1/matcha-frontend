@@ -19,20 +19,11 @@ interface PotentialMatch {
     profile_picture: any
 }
 
-interface PotentialMatch {
-    id: number
-    username: string
-    age: string
-    location: string
-    distance: string
-    gender: string
-    profile_picture: any
-}
-
 interface Profile {
     id: number
     username: string
     profile_picture: any
+    number_of_likes: number
 }
 
 interface Conversation {
@@ -42,8 +33,10 @@ interface Conversation {
     username: string
     photo: string
     last_message: string
-    matchingDate: string
+    matchingdate: string
     interested_in_relation: string
+    age: string
+    distance: string
 }
 
 interface Notification {
@@ -63,6 +56,7 @@ interface SideBarState {
     activeConversationId: null
     loading: boolean
     error: any
+    isSidebarVisible: boolean
 }
 
 const initialState: SideBarState = {
@@ -76,6 +70,7 @@ const initialState: SideBarState = {
     activeConversationId: null,
     loading: false,
     error: null,
+    isSidebarVisible: false,
 }
 
 export const initiateNewDM = createAsyncThunk(
@@ -274,6 +269,9 @@ const sideBarSlice = createSlice({
         addNotif: (state, action) => {
             state.notifications.unshift(action.payload)
         },
+        toggleSidebar: (state) => {
+            state.isSidebarVisible = !state.isSidebarVisible;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -350,6 +348,6 @@ const sideBarSlice = createSlice({
     },
 })
 
-export const { setTab, setActiveConversation, updateLastMessage, addNotif } =
+export const { setTab, setActiveConversation, updateLastMessage, addNotif, toggleSidebar } =
     sideBarSlice.actions
 export default sideBarSlice.reducer

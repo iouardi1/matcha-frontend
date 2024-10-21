@@ -15,6 +15,7 @@ import {
     initiateNewDM,
     setActiveConversation,
     setTab,
+    toggleSidebar,
 } from '@/redux/features/sideBarSlice'
 import { useEffect, useState } from 'react'
 import { getImage } from '@/utils/helpers/functions'
@@ -24,6 +25,7 @@ import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
 import { profileFetch } from '@/redux/features/profileSlice'
 import { useSocket } from '@/redux/context/SocketContext'
 import NotifItem from '@/components/notifs/NotifItem'
+import menuIconSidebar from "@/utils/pictures/icons-menu-sidebar.png"
 
 const SideBar = () => {
     const dispatch = useDispatch()
@@ -35,6 +37,7 @@ const SideBar = () => {
         (state: any) => state.sideBar.conversations
     )
     const Profile = useSelector((state: any) => state.sideBar.profile)
+    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible)
     const notifSocket = useSocket()
     const loading = useSelector((state: any) => state.loading.loading)
 
@@ -50,6 +53,12 @@ const SideBar = () => {
     const [showNotif, setShowNotif] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
 
+
+    const displaySidebar = () => {
+        console.log('isSidebarVisible: ', isSidebarVisible);
+        dispatch(toggleSidebar());
+    };
+
     const handleNotif = () => {
         setShowNotif(!showNotif)
         if (notif) setNotif(false)
@@ -60,7 +69,7 @@ const SideBar = () => {
     }
     useEffect(() => {
         fetchProfile()
-    }, [dispatch])
+    }, [dispatch, isSidebarVisible])
 
     // useEffect notif
     useEffect(() => {
@@ -103,9 +112,18 @@ const SideBar = () => {
     }
 
     return (
-        <div className="sidebar">
+        <div className={"sidebar"}>
             <div className="header">
                 <div className="profile-info">
+                    <button
+                        onClick={displaySidebar}
+                    >
+                        <Image
+                            src={menuIconSidebar}
+                            alt=""
+                            className="menu-icon-sidebar"
+                        />
+                    </button>
                     <button>
                         <img
                             src={getImage(Profile?.profile_picture)}
@@ -257,7 +275,7 @@ const SideBar = () => {
                                 alt="User's profile"
                                 className="match-number"
                             />
-                            <p className="likes-count">{likes} likes</p>
+                            <p className="likes-count">{Profile?.number_of_likes} likes</p>
                         </div>
                         {matches.length > 0 &&
                             matches?.map((match: any) => (
@@ -289,8 +307,6 @@ const SideBar = () => {
                             >
                                 <img
                                     src={getImage(conversation?.photo)}
-                                    // width={65}
-                                    // height={65}
                                     alt="Profile picture"
                                     className="conversation-picture"
                                 />

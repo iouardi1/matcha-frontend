@@ -14,13 +14,13 @@ export const SignInShema = () =>
 export const SignUpSchema = () => 
     Yup.object().shape({
         firstname: Yup.string()
-            .max(20, ("Password must be less than 20 characters"))
+            .max(20, ("Firstname must be less than 20 characters"))
             .required(("Field is mandatory")),
         lastname: Yup.string()
-            .max(20, ("Password must be less than 20 characters"))
+            .max(20, ("Lastname must be less than 20 characters"))
             .required(("Field is mandatory")),
         username: Yup.string()
-            .max(20, ("Password must be less than 20 characters"))
+            .max(10, ("Username must be less than 20 characters"))
             .required(("Field is mandatory")),
         email: Yup.string()
             .email(("Invalid Email"))
