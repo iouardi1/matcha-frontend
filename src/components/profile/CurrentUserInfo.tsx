@@ -1,39 +1,39 @@
 import React from 'react'
 
 export default function CurrentUserInfo({ user }: any) {
-  return (
-    <>
-        <div className="text-center mt-4">
-            <h2 className="text-3xl font-extrabold mb-2 text-pink-500">
-                {user.firstname} {user.lastname}
-            </h2>
-            <p className="text-sm text-gray-400">@{user.username}</p>
-        </div>
+    return (
+        <>
+            <div className="mx-4 mb-4 text-center">
+                <h2 className="sm:text-2xl text-xl font-extrabold text-white mb-1 inline-block capitalize">
+                    {user.firstname} &nbsp;
+                </h2>
+                <h2 className="sm:text-2xl text-xl font-extrabold text-white mb-1 inline-block capitalize">
+                    {user.lastname}&nbsp;
+                </h2>
+                <p className="text-sm text-gray-400">@{user.username}</p>
+            </div>
 
-        {/* User Details */}
-        <div className="grid grid-cols-2 gap-y-2 mt-6">
-            <p className="col-span-2 text-lg font-semibold text-pink-500 text-center mb-2">
-                About Me
-            </p>
-            <p className="col-span-2 text-sm text-gray-200 text-center mb-4">
-                {user.aboutme || 'No bio provided'}
-            </p>
-
-            <p className="font-semibold text-gray-400">Birthday</p>
-            <p className="text-gray-200">
-                {user.birthday
-                    ? new Date(
-                          new Date(user.birthday).getTime() + 60 * 60 * 1000
-                      )
-                          .toISOString()
-                          .split('T')[0]
-                    : 'N/A'}
-            </p>
-            <p className="font-semibold text-gray-400">Gender</p>
-            <p className="text-gray-200">{user.gender}</p>
-            <p className="font-semibold text-gray-400">Email</p>
-            <p className="text-gray-200">{user.email}</p>
-        </div>
-    </>
-)
+            {/* User Details */}
+            <div className="px-4 text-center">
+                <p className=" font-bold text-white mb-2">About Me</p>
+                <p className="text-md text-gray-200 leading-relaxed mb-4">
+                    {user.aboutme}
+                </p>
+                <p className="font-bold text-white mb-2">Birthday</p>
+                <p className="text-md text-gray-200 leading-relaxed mb-4">
+                    {user.birthday
+                        ? new Date(
+                              new Date(user.birthday).getTime() + 60 * 60 * 1000
+                          )
+                              .toISOString()
+                              .split('T')[0]
+                        : 'N/A'}
+                </p>
+                <p className="font-bold text-white mb-2">Gender</p>
+                <p className="text-md text-gray-200 leading-relaxed mb-4">{user.gender}</p>
+                <p className="font-bold text-white mb-2">Email</p>
+                <p className="text-md text-gray-200 leading-relaxed mb-4">{user.email}</p>
+            </div>
+        </>
+    )
 }

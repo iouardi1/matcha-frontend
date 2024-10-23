@@ -17,9 +17,12 @@ import conversationReducer from './features/conversationSlice'
 import socketReducer from './features/socketSlice'
 import locationRedudcer from './features/locationSlice'
 import swipeRedudcer from './features/swipeSlice'
+import profileUpdateReducer from './features/profileUpdateSlice'
+
 
 export const store = configureStore({
     reducer: {
+        profileUpdate: profileUpdateReducer,
         profile: profileReducer,
         profileSetup: profileSetupReducer,
         login: loginReducer,
