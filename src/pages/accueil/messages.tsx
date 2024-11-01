@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image"
 import menuIcon from "@/utils/pictures/icons-menu.png"
 import { useEffect, useRef, useState } from "react";
-import { addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
+import { addNewMessage, addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
 import { useSocket } from "@/redux/context/SocketContext";
 import { getConversations, toggleSidebar, updateLastMessage } from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
@@ -21,8 +21,6 @@ const Messages = () => {
     const messages = useSelector((state: any) => state.conversation.activeConversationMessages);
     
     const Profile = useSelector((state: any) => state.sideBar.profile);
-    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible);
-    
     const [newMessage, setNewMessage] = useState("");
     const conversationEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,9 +66,13 @@ const Messages = () => {
                 participant_id: Profile.id,
                 message_text: newMessage,
                 conversationId: activeConversationId,
+                sender_id: Profile.id,
             };
 
             socket?.emit('new message', messageData);
+            dispatch(addNewMessage(messageData));
+            dispatch(addNewMessages(messageData));
+            dispatch(updateLastMessage(messageData));
 
             setNewMessage("");
         }
@@ -83,6 +85,25 @@ const Messages = () => {
         }
     };
 
+    if (!activeConversationId) {
+        return (
+            <div className="no-conv-yet">
+                <p>
+                    You got it Hottie :3
+                </p>
+                <button
+                onClick={displaySidebar}
+                className='absolute top-0 left-0 m-[10px] md:hidden'
+                >
+                    <Image
+                        src={menuIcon}
+                        alt=""
+                        className='w-[35px] h-[35px]'
+                    />
+                </button>
+            </div>
+        )
+    }
    
 
     return (

@@ -24,7 +24,6 @@ export const swipeRight: any = createAsyncThunk(
 export const swipeLeft: any = createAsyncThunk(
     'swipe/left',
     async (arg, { dispatch }) => {
-        console.log('arg: ' + arg);
         const response = await axiosInstance.post('/filterMatches/swipeLeft', arg)
         return response.data
     }
@@ -32,7 +31,6 @@ export const swipeLeft: any = createAsyncThunk(
 export const blockUser: any = createAsyncThunk(
     'block',
     async (arg, { dispatch }) => {
-        console.log('arg: ' + arg);
         const response = await axiosInstance.post('/filterMatches/blockUser', arg)
         return response.data
     }

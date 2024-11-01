@@ -15,6 +15,7 @@ const initialState: resetPasswordState = {
 
 interface resetPasswordData {
   password: string;
+  confirmPassword: string;
   codeId: string;
 }
 
