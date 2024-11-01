@@ -62,7 +62,6 @@ const VerifyCodeForm = () => {
                       resetForm();
                     } else {
                       toast.error(error || 'An error occurred');
-                      console.log('err: ', error);
                     }
                   }
               }

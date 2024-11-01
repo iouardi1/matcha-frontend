@@ -60,7 +60,6 @@ export function RegisterForm() {
 				onSubmit={async (values, { resetForm }) => {
                     try {
                         const resultAction = await dispatch(registerUser(values));
-                        console.log('resultAction: ', resultAction);
                         const data = unwrapResult(resultAction);
                         
                         if (data) {
