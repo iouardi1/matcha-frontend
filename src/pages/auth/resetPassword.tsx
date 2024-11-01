@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { verifyCodeUser } from "@/redux/features/verifyCodeUserSlice";
 import { IconBrandGoogle, IconBrandTinder } from '@tabler/icons-react';
 import { SparklesCore } from '@/components/ui/sparkles';
 import { ResetPasswordSchema } from '@/validations';
 import { Field, Form, Formik } from 'formik';
 import { unwrapResult } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { resetPasswordUser } from '@/redux/features/resetPasswordSlice';
 
@@ -38,26 +37,32 @@ const resetPasswordForm = () => {
           particleColor="#FFFFFF"
         />
       </div>
+      <Toaster position="top-right" />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <IconBrandTinder color="#fd5564" fill="#fd5564" className="mx-auto h-10 w-auto" />
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm z-10">
         <Formik
-          initialValues={{ password: ''}}
+          initialValues={{ password: '', confirmPassword: '' }}
           validationSchema={ResetPasswordSchema}
           onSubmit={async (values, { resetForm }) => {
-            try {
-                const requestData = { ...values, codeId: codeId?.codeId };
-                const resultAction = await dispatch(resetPasswordUser(requestData));
-                const data = await unwrapResult(resultAction);
-                if (data) {
-                  toast.success(data.message);
-                  router.push('./verifyEmail');
-                }
-              } catch (error: any) {
-                toast.error(error);
-                resetForm();
+            if (codeId) {
+              try {
+                    const requestData = { ...values, codeId: codeId?.codeId };
+                    const resultAction = await dispatch(resetPasswordUser(requestData));
+                    const data = await unwrapResult(resultAction);
+                    if (data) {
+                      toast.success(data.message);
+                      router.push('/auth/login');
+                    }
+                  } catch (error: any) {
+                    toast.error(error);
+                    resetForm();
+                  }
+                } else {
+                  toast.error('Please validate your account first');
+                  router.push('./sendVerificationCode');
               }
           }}
         >

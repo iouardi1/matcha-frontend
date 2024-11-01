@@ -8,7 +8,7 @@ export interface registerState {
     userToken: any;
 	  error: any;
     success: boolean;
-	// data: [];
+	  data: any;
 }
 
 const initialState: registerState = {
@@ -17,6 +17,7 @@ const initialState: registerState = {
     userToken: null,
     error: null,
     success: false,
+    data: null,
 };
 
 interface RegisterData {
@@ -51,21 +52,22 @@ export const registerSlice = createSlice({
 	},
 	extraReducers: (builder) => {
     builder
-      .addCase(registerUser.pending, (state) => {
+      .addCase(registerUser.pending, (state, action) => {
         state.loading = true;
         state.success = false;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
+        state.data = action.payload
         state.error = null;
 
       })
-      .addCase(registerUser.rejected, (state, { payload }) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
-        state.error = payload
+        state.error = action.payload
     });
   },
 });

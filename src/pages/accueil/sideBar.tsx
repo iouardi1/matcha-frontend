@@ -56,7 +56,6 @@ const SideBar = () => {
 
 
     const displaySidebar = () => {
-        console.log('isSidebarVisible: ', isSidebarVisible);
         dispatch(toggleSidebar());
     };
 

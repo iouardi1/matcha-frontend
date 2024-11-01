@@ -5,13 +5,13 @@ import { SparklesCore } from '@/components/ui/sparkles';
 import { ForgetPasswordSchema } from '@/validations';
 import { Field, Form, Formik } from 'formik';
 import { unwrapResult } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 
 const VerifyCodeForm = () => {
   const dispatch = useDispatch();
   const router = useRouter()
-  const { loading, error, data } = useSelector((state: any) => state.verifyCodeUser);
+  // const { loading, error, data } = useSelector((state: any) => state.verifyCodeUser);
   const codeId = useSelector(
     (state: any) => state.sendVerificationCode.data
   )
@@ -37,6 +37,7 @@ const VerifyCodeForm = () => {
           particleColor="#FFFFFF"
         />
       </div>
+      <Toaster position="top-right" />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <IconBrandTinder color="#fd5564" fill="#fd5564" className="mx-auto h-10 w-auto" />
       </div>
@@ -46,16 +47,27 @@ const VerifyCodeForm = () => {
           initialValues={{ email: '', code: '' }}
           validationSchema={ForgetPasswordSchema}
           onSubmit={async (values, { resetForm }) => {
-            try {
-                const requestData = { ...values, codeId: codeId?.codeId };
-                const resultAction = await dispatch(verifyCodeUser(requestData));
-                const data = await unwrapResult(resultAction);
-                if (data) {
-                  toast.success(data.message);
-                  router.push('./resetPassword');
-                }
-              } catch (error: any) {
-                toast.error(error);
+            if (codeId) {
+              try {
+                  const requestData = { ...values, codeId: codeId?.codeId };
+                    const resultAction = await dispatch(verifyCodeUser(requestData));
+                    const data = await unwrapResult(resultAction);
+                    if (data) {
+                      toast.success(data.message);
+                      router.push('./resetPassword');
+                    }
+                  } catch (error: any) {
+                    if (error.response && error.response.status === 400) {
+                      toast.error(error.response.data.error || error.response.data.message);
+                      resetForm();
+                    } else {
+                      toast.error(error || 'An error occurred');
+                      console.log('err: ', error);
+                    }
+                  }
+              }
+              else {
+                toast.error('Invalid code');
                 resetForm();
               }
           }}

@@ -170,7 +170,6 @@ export const getListOfNotifications: any = createAsyncThunk(
             const response = await axiosInstance.get(
                 `profile/getListOfNotifications`
             )
-            // console.log(response.data)=
             return response.data
         } catch (error: any) {
             if (error.response && error.response.data.user_id) {
@@ -314,7 +313,6 @@ const sideBarSlice = createSlice({
             .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
                 state.loading = false
                 state.potentialMatch = action.payload.matches
-                // console.log(' state.potentialMatch: ', state.potentialMatch)
             })
             .addCase(getListOfPotentialMatches.rejected, (state, action) => {
                 state.loading = false

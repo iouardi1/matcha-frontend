@@ -197,29 +197,42 @@
     padding: 20px;
 }
 
-.sidebar .messages-content .conversation {
+.sidebar .content .messages-content .conversation {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     margin-bottom: 15px;
     margin-top: 15px;
 }
 
-.sidebar .messages-content .conversation-picture {
-    width: 65px;
+.sidebar .content .messages-content .conversation .conv-details {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    margin-left: 15px;
+}
+
+.sidebar .messages-content .conversation .conversation-picture {
+    min-width: 65px;
     height: 65px;
     border-radius: 50%;
-    margin-right: 15px;
+    /* margin-right: 15px; */
     object-fit: cover;
 
 }
 
-.sidebar .messages-content .last-message {
-    width: 100%;
+.sidebar .content .messages-content .conversation .conv-details .last-message {
+    /* width: 100%; */
     max-height: 20px;
     color: white;
     font-size: 0.8rem;
     font-weight: 100;
     overflow: hidden;
+    text-align: left;
 }
 
 .sidebar .messages-content .name {

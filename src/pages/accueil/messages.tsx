@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image"
 import menuIcon from "@/utils/pictures/icons-menu.png"
 import { useEffect, useRef, useState } from "react";
-import { addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
+import { addNewMessage, addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
 import { useSocket } from "@/redux/context/SocketContext";
 import { getConversations, toggleSidebar, updateLastMessage } from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
@@ -70,6 +70,7 @@ const Messages = () => {
             };
 
             socket?.emit('new message', messageData);
+            dispatch(addNewMessage(messageData));
             dispatch(addNewMessages(messageData));
             dispatch(updateLastMessage(messageData));
 
@@ -84,6 +85,25 @@ const Messages = () => {
         }
     };
 
+    if (!activeConversationId) {
+        return (
+            <div className="no-conv-yet">
+                <p>
+                    You got it Hottie :3
+                </p>
+                <button
+                onClick={displaySidebar}
+                className='absolute top-0 left-0 m-[10px] md:hidden'
+                >
+                    <Image
+                        src={menuIcon}
+                        alt=""
+                        className='w-[35px] h-[35px]'
+                    />
+                </button>
+            </div>
+        )
+    }
    
 
     return (

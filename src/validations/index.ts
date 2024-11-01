@@ -7,7 +7,7 @@ export const SignInShema = () =>
         .email(("Invalid Email"))
         .required(("Field is mandatory")),
       password: Yup.string()
-        .min(4, ("Invalid Password"))
+        .min(8, ("Invalid Password"))
         .required(("Field is mandatory")),
     });
 // register
@@ -26,11 +26,12 @@ export const SignUpSchema = () =>
             .email(("Invalid Email"))
             .required(("Field is mandatory")),
         password: Yup.string()
-            .min(2, ("Password must be at least 8 characters"))
-            .required(("Field is mandatory")),
+            .min(8, "Password must be at least 8 characters")
+            .matches(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[.!@#$%^&*])/, "Password must be alphanumeric and contain at least one special character")
+            .required("Field is mandatory"),
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], "Passwords must match")
-            .required(("Field is mandatory"))
+            .required("Field is mandatory")
     });
 
     export const ForgetPasswordSchema = () =>
@@ -55,9 +56,10 @@ export const SignUpSchema = () =>
     export const ResetPasswordSchema = () =>
         Yup.object().shape({
             password: Yup.string()
-            .min(2, ("Password must be at least 8 characters"))
-            .required(("Field is mandatory")),
+                .min(8, "Password must be at least 8 characters")
+                .matches(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[.!@#$%^&*])/, "Password must be alphanumeric and contain at least one special character")
+                .required("Field is mandatory"),
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], "Passwords must match")
-                .required(("Field is mandatory"))
+                .required("Field is mandatory")
         });

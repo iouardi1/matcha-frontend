@@ -19,7 +19,7 @@ export function Home() {
             <h1 className="md:text-7xl text-3xl lg:text-3xl font-bold">Matcha</h1>
           </div>
           <div>
-            <button className="btn btn-outline bg-zinc-100" onClick={() => router.push("/auth/login")}>Log in</button>
+            <button className="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg  bg-zinc-100" onClick={() => router.push("/auth/login")}>Log in</button>
           </div>
       </nav>
 

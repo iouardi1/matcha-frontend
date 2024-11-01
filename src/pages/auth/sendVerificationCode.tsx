@@ -5,7 +5,7 @@ import { Field, Form, Formik } from 'formik';
 import { SparklesCore } from '@/components/ui/sparkles';
 import { sendVerificationCodeUser } from "@/redux/features/sendVerificationCodeSlice";
 import { unwrapResult } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 
 const sendVerificationCode = () => {
@@ -28,6 +28,7 @@ const sendVerificationCode = () => {
           particleColor="#FFFFFF"
         />
       </div>
+      <Toaster position="top-right" />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <IconBrandTinder color="#fd5564" fill="#fd5564" className="mx-auto h-[45px] w-auto" />
       </div>
@@ -46,9 +47,7 @@ const sendVerificationCode = () => {
                     router.push('./forgetPassword');
                 }
             } catch (error: any) {
-                console.error('Sending email failed:', error);
                 toast.error(error);
-
             }
           }}
         >

@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import Image from "next/image"
+import menuIcon from "@/utils/pictures/icons-menu.png"
 import Swipeable from 'react-swipy'
 import Swiper from './utils/Swiper' // Adjust the path as needed
 import Card from './Card'
@@ -9,6 +11,7 @@ import {
     createNotification,
     getListOfMatches,
     setTab,
+    toggleSidebar,
 } from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
 import { blockUser, swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
@@ -82,13 +85,48 @@ const SwiperComponent = () => {
         setCenterX(null)
         setSwipeDirection(null)
     }
+
+    const displaySidebar = () => {
+        dispatch(toggleSidebar());
+    };
+
+    if (matches.length == 0) {
+        return (
+            <div className='no-conv-yet'>
+                <p>
+                    No Matches Yet :c
+                </p>
+                <button
+                onClick={displaySidebar}
+                className='absolute top-0 left-0 m-[10px] md:hidden'
+                >
+                    <Image
+                        src={menuIcon}
+                        alt=""
+                        className='w-[35px] h-[35px]'
+                    />
+                </button>
+            </div>
+        )
+    }
+
     return (
         <div className="h-full relative flex justify-center items-center w-full overflow-hidden">
-            <div className="relative w-[250px] h-[400px]">
+            <button
+                onClick={displaySidebar}
+                className='absolute top-0 left-0 m-[10px] md:hidden'
+            >
+                <Image
+                    src={menuIcon}
+                    alt=""
+                    className='w-[35px] h-[35px]'
+                />
+            </button>
+            <div className="relative sm:w-[350px] sm:h-[500px] xs:w-[300px] xs:h-[450px]  w-[230px] h-[450px]">
                 {cards.length > 0 && (
                     <div
                         ref={cardRef}
-                        className="relative w-[250px] h-[400px]"
+                        className="relative sm:w-[350px] sm:h-[500px] xs:w-[300px] xs:h-[450px]  w-[230px] h-[450px]"
                         onMouseDown={handlemouse}
                         onMouseMove={handlemousemove}
                         onMouseUp={handlemouseup}
@@ -126,6 +164,13 @@ const SwiperComponent = () => {
                                             )}
                                         </Button>
                                         <Button
+                                            name={'block'}
+                                            className="w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-red-500 hover:bg-red-500 flex items-center justify-center cursor-pointer"
+                                            onClick={handleBlock}
+                                        >
+                                            <IconUserCancel color="white"/>
+                                        </Button>
+                                        <Button
                                             name={'like'}
                                             className={`${
                                                 swipeDirection === 'right'
@@ -149,13 +194,7 @@ const SwiperComponent = () => {
                                                 />
                                             )}
                                         </Button>
-                                        <Button
-                                            name={'block'}
-                                            className="w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-red-500 hover:bg-red-500 flex items-center justify-center cursor-pointer"
-                                            onClick={handleBlock}
-                                        >
-                                            <IconUserCancel color="white"/>
-                                        </Button>
+                                       
                                     </div>
                                 )
                             }}
@@ -180,14 +219,14 @@ const SwiperComponent = () => {
                                     dislike
                                 </div>
 
-                                <div className="w-full h-[20%] justify-between text-white font-bold capitalize p-2 text-center z-10 flex bg-black bg-opacity-10">
+                                <div className="w-full h-[20%] justify-between text-white font-light xs:font-bold capitalize p-2 text-center z-10 flex bg-black bg-opacity-10">
                                     <div className='flex flex-col-reverse items-center'>
-                                        <div className="flex font-extrabold text-base ">
+                                        <div className="flex font-light xs:font-bold text-base ">
                                             <p>Famerate</p>
                                             <span>&nbsp;&nbsp;</span>
                                             <p>10</p>
                                         </div>
-                                        <div className="flex font-extrabold text-2xl">
+                                        <div className="flex font-light text-xl xs:font-bold xs:text-2xl">
                                             <p className="">
                                                 {cards[0].username}
                                             </p>
@@ -199,7 +238,7 @@ const SwiperComponent = () => {
                                         dispatch(setTab('details'))
                                         dispatch(setId(cards[0].id))
                                     }}>
-                                        <IconUserCircle color="#ffffff" size={50}/>
+                                        <IconUserCircle color="#ffffff" className='xs:w-[50px] xs:h-[50px] w-[30px] h-[30px]'/>
                                     </div>
                                 </div>
 
