@@ -34,6 +34,9 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
     (response) => {
+        if (response.data.message === 'Logout') {
+            Cookies.remove('accessToken')
+        }
         if (response.data.shouldRedirect) {
             window.location.href = response.data.redirectTo
         }

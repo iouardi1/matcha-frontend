@@ -3,6 +3,7 @@ import profilePath from '/Users/macos/Desktop/matcha-backend/uploads/17252961327
 import defaultImage from '/Users/macos/Desktop/matcha-front/src/utils/pictures/woman1.jpeg'
 import blurred from '@/utils/pictures/blurred.png'
 import settingPath from '@/utils/pictures/icons8-adjust-50.png'
+import logoutPath from '@/utils/pictures/icons8-logout-50.png'
 import notifPath from '@/utils/pictures/icons8-notification-50.png'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -22,11 +23,16 @@ import { getImage } from '@/utils/helpers/functions'
 // import { useSocket } from '@/redux/context/SocketContext'
 import Loading from '@/components/ui/loading'
 import { profileInit, profileSetup } from '@/redux/features/profileSetupSlice'
-import { profileDetailsFetch, profileFetch, setId } from '@/redux/features/profileSlice'
+import {
+    profileDetailsFetch,
+    profileFetch,
+    setId,
+} from '@/redux/features/profileSlice'
 import { useSocket } from '@/redux/context/SocketContext'
 import NotifItem from '@/components/notifs/NotifItem'
-import menuIconSidebar from "@/utils/pictures/icons-menu-sidebar.png"
+import menuIconSidebar from '@/utils/pictures/icons-menu-sidebar.png'
 import Filters from '@/components/notifs/Filters'
+import { logoutFetch } from '@/redux/features/loginSlice'
 
 const SideBar = () => {
     const dispatch = useDispatch()
@@ -38,7 +44,9 @@ const SideBar = () => {
         (state: any) => state.sideBar.conversations
     )
     const Profile = useSelector((state: any) => state.sideBar.profile)
-    const isSidebarVisible = useSelector((state: any) => state.sideBar.isSidebarVisible)
+    const isSidebarVisible = useSelector(
+        (state: any) => state.sideBar.isSidebarVisible
+    )
     const notifSocket = useSocket()
     const loading = useSelector((state: any) => state.loading.loading)
 
@@ -53,7 +61,6 @@ const SideBar = () => {
     const [notif, setNotif] = useState(false)
     const [showNotif, setShowNotif] = useState(false)
     const [showFilter, setShowFilter] = useState(false)
-
 
     const displaySidebar = () => {
         dispatch(toggleSidebar());
@@ -114,12 +121,10 @@ const SideBar = () => {
     }
 
     return (
-        <div className={"sidebar"}>
+        <div className={'sidebar'}>
             <div className="header">
                 <div className="profile-info">
-                    <button
-                        onClick={displaySidebar}
-                    >
+                    <button onClick={displaySidebar}>
                         <Image
                             src={menuIconSidebar}
                             alt=""
@@ -142,6 +147,21 @@ const SideBar = () => {
                     <span className="username">{Profile?.username}</span>
                 </div>
                 <div className="icons">
+                    {/* logout */}
+                    <button
+                        className="relative"
+                        onClick={() => {
+                            dispatch(logoutFetch())
+                        }}
+                    >
+                        <Image
+                            src={logoutPath}
+                            width={50}
+                            height={50}
+                            alt=""
+                            className="icon2"
+                        />
+                    </button>
                     <button
                         className="relative"
                         onClick={() => {
@@ -222,7 +242,9 @@ const SideBar = () => {
                                 alt="User's profile"
                                 className="match-number"
                             />
-                            <p className="likes-count">{Profile?.number_of_likes} likes</p>
+                            <p className="likes-count">
+                                {Profile?.number_of_likes} likes
+                            </p>
                         </div>
                         {matches.length > 0 &&
                             matches?.map((match: any) => (

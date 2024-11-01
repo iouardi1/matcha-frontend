@@ -24,7 +24,7 @@ const UserImageSlider = ({ images }: { images: string[] }) => {
                 {images.map((_, index) => (
                     <button
                         key={index}
-                        className={`w-3 h-3 mx-1 rounded-full ${
+                        className={`w-[5px] h-[5px] mx-1 rounded-full ${
                             currentIndex === index ? 'bg-pink-500' : 'bg-gray-600'
                         }`}
                         onClick={() => setCurrentIndex(index)}

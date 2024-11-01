@@ -4,7 +4,7 @@ import menuIcon from "@/utils/pictures/icons-menu.png"
 import { useEffect, useRef, useState } from "react";
 import { addNewMessage, addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
 import { useSocket } from "@/redux/context/SocketContext";
-import { getConversations, toggleSidebar, updateLastMessage } from "@/redux/features/sideBarSlice";
+import { createNotification, getConversations, toggleSidebar, updateLastMessage} from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
 import locationIcon from "@/utils/pictures/location-icon.png"
 import heartIcon from "@/utils/pictures/heart-icon.png"
@@ -58,8 +58,8 @@ const Messages = () => {
     const displaySidebar = () => {
         dispatch(toggleSidebar());
     };
-    
-    
+
+
     const handleSendMessage = () => {
         if (newMessage.trim()) {
             const messageData = {
@@ -74,12 +74,24 @@ const Messages = () => {
             dispatch(addNewMessages(messageData));
             dispatch(updateLastMessage(messageData));
 
-            setNewMessage("");
+            socket?.emit('send notif', {
+                notifType: 'message',
+                id: activeConversation.match_id,
+                user: null,
+            })
+            dispatch(
+                createNotification({
+                    notifType: 'message',
+                    user: null,
+                    id: activeConversation.match_id,
+                })
+            )
+            setNewMessage('')
         }
     };
 
-     // Handle Enter key press in the input field
-     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Handle Enter key press in the input field
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             handleSendMessage();
         }
@@ -107,13 +119,12 @@ const Messages = () => {
    
 
     return (
-        activeConversationId && activeConversation && (
+        activeConversationId &&
+        activeConversation && (
             <div className="conv">
                 <div className="conv-era">
                     <div className="header">
-                        <button
-                            onClick={displaySidebar}
-                        >
+                        <button onClick={displaySidebar}>
                             <Image
                                 src={menuIcon}
                                 alt=""
@@ -126,29 +137,31 @@ const Messages = () => {
                                 alt=""
                                 className="userPicture"
                             />
-                            <p className="user-details"> 
-                                You matched with {activeConversation?.username} on {activeConversation?.matchingdate}
+                            <p className="user-details">
+                                You matched with {activeConversation?.username}{' '}
+                                on {activeConversation?.matchingdate}
                             </p>
                         </div>
                         <div className="conv-settings">
-                            <button
-                                onClick={handleBlock}
-                            >
+                            <button onClick={handleBlock}>
                                 <Image
                                     src={blockIcon}
                                     alt="Profile picture"
                                     className="icon-picture"
-                                    />
-                                </button>
-                            </div>
-                        <div>
+                                />
+                            </button>
                         </div>
+                        <div></div>
                     </div>
                     <div className="conversation-history">
-                    {messages?.map((message: any, index: number) => (
+                        {messages?.map((message: any, index: number) => (
                             <div
                                 key={index}
-                                className={`message ${message.sender_id == Profile.id ? "user" : "match"}`}
+                                className={`message ${
+                                    message.sender_id == Profile.id
+                                        ? 'user'
+                                        : 'match'
+                                }`}
                             >
                                 <p>{message.message_text}</p>
                             </div>
@@ -156,17 +169,22 @@ const Messages = () => {
                         {/* This element will always be scrolled into view */}
                         <div ref={conversationEndRef} />
                     </div>
-                <div className="message-input">
-                    <button className="send-button" onClick={handleSendMessage}>Send</button>
-                    <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
-                        onKeyDown={handleKeyDown}
-                    />
+                    <div className="message-input">
+                        <button
+                            className="send-button"
+                            onClick={handleSendMessage}
+                        >
+                            Send
+                        </button>
+                        <input
+                            type="text"
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            placeholder="Type a message..."
+                            onKeyDown={handleKeyDown}
+                        />
+                    </div>
                 </div>
-            </div>
                 <div className="profile">
                     <div className="pictures">
                         <img
@@ -177,14 +195,19 @@ const Messages = () => {
                     </div>
                     <div className="bio">
                         <div className="name-age">
-                            <p className="username">{activeConversation?.username} {activeConversation?.age} </p>
+                            <p className="username">
+                                {activeConversation?.username}{' '}
+                                {activeConversation?.age}{' '}
+                            </p>
                             <div className="location">
                                 <Image
                                     src={locationIcon}
                                     alt=""
                                     className="location-icon"
-                                    /> 
-                                <p id="location">{activeConversation?.distance} km away</p>
+                                />
+                                <p id="location">
+                                    {activeConversation?.distance} km away
+                                </p>
                             </div>
                         </div>
                         <div className="intrested-in-relation">
@@ -193,8 +216,11 @@ const Messages = () => {
                                     src={heartIcon}
                                     alt=""
                                     className="heart-icon"
-                                    /> 
-                                <p>Looking for {activeConversation?.interested_in_relation}</p>
+                                />
+                                <p>
+                                    Looking for{' '}
+                                    {activeConversation?.interested_in_relation}
+                                </p>
                             </div>
                         </div>
                     </div>
