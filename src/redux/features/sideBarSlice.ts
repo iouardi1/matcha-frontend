@@ -73,10 +73,10 @@ const initialState: SideBarState = {
     error: null,
     isSidebarVisible: false,
     filter: {
-        minAgeGap: null,
-        maxAgeGap: null,
-        distance: null,
-        fameRate: null,
+        minAgeGap: 18,
+        maxAgeGap: 100,
+        distance: 1,
+        fameRate: 10,
     },
 }
 
@@ -231,7 +231,10 @@ const sideBarSlice = createSlice({
     name: 'sideBar',
     initialState,
     reducers: {
-        setTab(state, action: PayloadAction<'matches' | 'messages' | 'details'>) {
+        setTab(
+            state,
+            action: PayloadAction<'matches' | 'messages' | 'details'>
+        ) {
             state.tab = action.payload
         },
         setActiveConversation(state, action) {
@@ -250,7 +253,7 @@ const sideBarSlice = createSlice({
             state.notifications.unshift(action.payload)
         },
         toggleSidebar: (state) => {
-            state.isSidebarVisible = !state.isSidebarVisible;
+            state.isSidebarVisible = !state.isSidebarVisible
         },
         updateFilter(
             state,
@@ -339,7 +342,8 @@ export const {
     setTab,
     setActiveConversation,
     updateLastMessage,
-    addNotif, toggleSidebar,
+    addNotif,
+    toggleSidebar,
     updateFilter,
 } = sideBarSlice.actions
 export default sideBarSlice.reducer

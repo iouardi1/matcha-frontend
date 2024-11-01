@@ -45,11 +45,46 @@ export const generateId = function () {
 }
 
 export const getImage = (path) => {
-    if (!path) return null;
+    if (!path) return null
 
-    if (path.startsWith("http")) {
-        return path;
+    if (path.startsWith('http')) {
+        return path
     }
 
-    return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`;
-};
+    return `${process.env.BACKEND_LOCAL_DEV}/api/upload?path=${path}`
+}
+
+export const formatDate = (date) => {
+    const currentDate = new Date()
+    const inputDate = new Date(date)
+
+    // Check if the input date is today
+    if (
+        inputDate.getDate() === currentDate.getDate() &&
+        inputDate.getMonth() === currentDate.getMonth() &&
+        inputDate.getFullYear() === currentDate.getFullYear()
+    ) {
+        // Same day: Hour:Minute (24-hour format)
+        return inputDate.toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+    }
+
+    // Check if the input date is in the same year
+    if (inputDate.getFullYear() === currentDate.getFullYear()) {
+        // Same year: Day Month
+        return inputDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+        })
+    }
+
+    // Different year: Day Month Year
+    return inputDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    })
+}

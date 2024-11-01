@@ -5,18 +5,25 @@ import { startLoading, stopLoading } from './loadingSlice'
 export interface swipeState {
     // error: any
     // data: []
+    matchNotif: any
+    lastSwipedId: any
 }
 
 const initialState: swipeState = {
     // loading: false,
     // error: null,
     // data: [],
+    matchNotif: null,
+    lastSwipedId: null,
 }
 
 export const swipeRight: any = createAsyncThunk(
     'swipe/right',
     async (arg, { dispatch }) => {
-        const response = await axiosInstance.post('/filterMatches/swipeRight', arg)
+        const response = await axiosInstance.post(
+            '/filterMatches/swipeRight',
+            arg
+        )
         return response.data
     }
 )
@@ -24,16 +31,22 @@ export const swipeRight: any = createAsyncThunk(
 export const swipeLeft: any = createAsyncThunk(
     'swipe/left',
     async (arg, { dispatch }) => {
-        console.log('arg: ' + arg);
-        const response = await axiosInstance.post('/filterMatches/swipeLeft', arg)
+        console.log('arg: ' + arg)
+        // const response = await axiosInstance.post(
+        //     '/filterMatches/swipeLeft',
+        //     arg
+        // )
         return response.data
     }
 )
 export const blockUser: any = createAsyncThunk(
     'block',
     async (arg, { dispatch }) => {
-        console.log('arg: ' + arg);
-        const response = await axiosInstance.post('/filterMatches/blockUser', arg)
+        console.log('arg: ' + arg)
+        const response = await axiosInstance.post(
+            '/filterMatches/blockUser',
+            arg
+        )
         return response.data
     }
 )
@@ -41,21 +54,20 @@ export const blockUser: any = createAsyncThunk(
 export const swipeSlice = createSlice({
     name: 'swipe',
     initialState,
-    reducers: {},
+    reducers: {
+        setLastSwipedId(state, action) {
+            state.lastSwipedId = action.payload
+        },
+    },
     extraReducers: (builder) => {
-        builder
-        // .addCase(profileFetch.pending, (state) => {
-        //     state.error = null
-        // })
-        // .addCase(profileFetch.fulfilled, (state, action) => {
-        //     state.data = action.payload.data
-        // })
-        // .addCase(profileFetch.rejected, (state, action) => {
-        //     state.error = action.error.message
-        // })
+        builder.addCase(swipeRight.fulfilled, (state, action) => {
+            if (action.payload.message === 'New match') {
+                state.matchNotif = 'match'
+            }
+        })
     },
 })
 
-export const {} = swipeSlice.actions
+export const { setLastSwipedId } = swipeSlice.actions
 
 export default swipeSlice.reducer

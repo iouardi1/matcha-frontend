@@ -3,7 +3,7 @@ import Swipeable from 'react-swipy'
 import Swiper from './utils/Swiper' // Adjust the path as needed
 import Card from './Card'
 import Button from './Button'
-import { IconHeartFilled, IconX , IconUserCancel } from '@tabler/icons-react'
+import { IconHeartFilled, IconX, IconUserCancel } from '@tabler/icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     createNotification,
@@ -11,11 +11,14 @@ import {
     setTab,
 } from '@/redux/features/sideBarSlice'
 import { getImage } from '@/utils/helpers/functions'
-import { blockUser, swipeLeft, swipeRight } from '@/redux/features/swipeSlice'
-import { useSocket } from '@/redux/context/SocketContext'
 import {
-    IconUserCircle
-  } from "@tabler/icons-react";
+    blockUser,
+    setLastSwipedId,
+    swipeLeft,
+    swipeRight,
+} from '@/redux/features/swipeSlice'
+import { useSocket } from '@/redux/context/SocketContext'
+import { IconUserCircle } from '@tabler/icons-react'
 import { setId } from '@/redux/features/profileSlice'
 
 const SwiperComponent = () => {
@@ -27,38 +30,82 @@ const SwiperComponent = () => {
     const cardRef = useRef(null)
     const dispatch = useDispatch()
     const matches = useSelector((state: any) => state.sideBar.potentialMatch)
+    const matchNotif = useSelector((state: any) => state.swipe.matchNotif)
+    const lastSwipedId = useSelector((state: any) => state.swipe.lastSwipedId)
+
     const socket = useSocket()
 
     useEffect(() => {
         setCards([...matches])
     }, [matches, dispatch])
 
+    useEffect(() => {
+        if (matchNotif && lastSwipedId) {
+            socket?.emit('send notif', {
+                notifType: 'match',
+                user: null,
+                id: lastSwipedId,
+            })
+            dispatch(
+                createNotification({
+                    notifType: 'match',
+                    user: null,
+                    id: lastSwipedId,
+                })
+            )
+        }
+    }, [dispatch, matchNotif, lastSwipedId])
+
     const remove = () => {
         setCards(cards.slice(1))
     }
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
+            dispatch(setLastSwipedId(cards[0]?.id))
             dispatch(swipeRight(cards[0]))
             socket?.emit('send notif', {
                 notifType: 'like',
                 user: cards[0].email,
+                id: null,
             })
             dispatch(
-                createNotification({ notifType: 'like', user: cards[0].email })
+                createNotification({
+                    notifType: 'like',
+                    user: cards[0].email,
+                    id: null,
+                })
             )
         } else if (direction === 'left') {
             dispatch(swipeLeft(cards[0]))
             socket?.emit('send notif', {
                 notifType: 'dislike',
                 user: cards[0].email,
+                id: null,
             })
             dispatch(
                 createNotification({
                     notifType: 'dislike',
                     user: cards[0].email,
+                    id: null,
                 })
             )
         }
+    }
+
+    const viewProfile = (id: any) => {
+        console.log(id);
+        socket?.emit('send notif', {
+            notifType: 'view',
+            user: null,
+            id: id,
+        })
+        dispatch(
+            createNotification({
+                notifType: 'view',
+                user: null,
+                id: id,
+            })
+        )
     }
 
     const handleBlock = () => {
@@ -181,7 +228,7 @@ const SwiperComponent = () => {
                                 </div>
 
                                 <div className="w-full h-[20%] justify-between text-white font-bold capitalize p-2 text-center z-10 flex bg-black bg-opacity-10">
-                                    <div className='flex flex-col-reverse items-center'>
+                                    <div className="flex flex-col-reverse items-center">
                                         <div className="flex font-extrabold text-base ">
                                             <p>Famerate</p>
                                             <span>&nbsp;&nbsp;</span>
@@ -195,11 +242,18 @@ const SwiperComponent = () => {
                                             <p>{cards[0].age}</p>{' '}
                                         </div>
                                     </div>
-                                    <div className='flex items-center h-full' onClick={() => {
-                                        dispatch(setTab('details'))
-                                        dispatch(setId(cards[0].id))
-                                    }}>
-                                        <IconUserCircle color="#ffffff" size={50}/>
+                                    <div
+                                        className="flex items-center h-full"
+                                        onClick={() => {
+                                            dispatch(setTab('details'))
+                                            dispatch(setId(cards[0].id))
+                                            viewProfile(cards[0].id)
+                                        }}
+                                    >
+                                        <IconUserCircle
+                                            color="#ffffff"
+                                            size={50}
+                                        />
                                     </div>
                                 </div>
 

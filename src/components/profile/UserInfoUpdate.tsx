@@ -33,7 +33,6 @@ export default function UserInfoUpdate() {
         switch (type) {
             case 'input':
                 setFormData({ ...formData, [value.name]: value.value })
-                console.log(value.value)
                 break
             case 'deleteInterest':
                 const updatedInterests = formData.interests.filter(
@@ -48,59 +47,33 @@ export default function UserInfoUpdate() {
                         interests: [...formData.interests, value],
                     })
                 }
-                setIsModalOpen(false) // Close modal after selection
+                setIsModalOpen(false)
                 break
             case 'toggleGender':
-                setFormData({
-                    ...formData,
-                    // gender: formData.gender === 'Man' ? 'Woman' : 'Man',
-                })
-                // console.log(formData.gender);
+                if (value === 'Man') {
+                    setFormData({
+                        ...formData,
+                        gender: 'Woman',
+                    })
+                } else if (value === 'Woman') {
+                    setFormData({
+                        ...formData,
+                        gender: 'Man',
+                    })
+                }
                 break
             case 'relationship':
                 setFormData({ ...formData, relation_type: value })
                 break
+            case 'password':
+                setFormData({ ...formData, password: value.value })
+                break
+            case 'confirmPassword':
+                setFormData({ ...formData, confirmPassword: value.value })
             default:
                 break
         }
-        dispatch(FillUpdatedData(formData))
     }
-    // const handleDeleteInterest = (index: number) => {
-    //     const updatedInterests = formData.interests.filter(
-    //         (_: any, i: any) => i !== index
-    //     )
-    //     setFormData({ ...formData, interests: updatedInterests })
-    // }
-
-    // const handleAddInterest = (interest: string) => {
-    //     if (!formData.interests.includes(interest)) {
-    //         setFormData({
-    //             ...formData,
-    //             interests: [...formData.interests, interest],
-    //         })
-    //     }
-    //     setIsModalOpen(false) // Close modal after selection
-    // }
-
-    // const handleToggleGender = () => {
-    //     setFormData({
-    //         ...formData,
-    //         gender: formData.gender === 'Man' ? 'Woman' : 'Man',
-    //     })
-    // }
-
-    // const handleRelationshipChange = (
-    //     event: React.ChangeEvent<HTMLInputElement>
-    // ) => {
-    //     setFormData({ ...formData, relation_type: event.target.value })
-    // }
-
-    // const handleInputChange = (
-    //     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    // ) => {
-    //     const { name, value } = e.target
-    //     setFormData({ ...formData, [name]: value })
-    // }
 
     useEffect(() => {
         dispatch(populate())
@@ -108,7 +81,9 @@ export default function UserInfoUpdate() {
             dispatch(UpdateSave(false))
             dispatch(ProfileUpdateData({ data: formData }))
         }
+        dispatch(FillUpdatedData(formData))
     }, [formData, user, dispatch])
+
     return (
         <>
             <label className="font-semibold">First Name :</label>
@@ -132,6 +107,15 @@ export default function UserInfoUpdate() {
                 className="p-2 rounded-md bg-gray-800 border border-gray-500"
                 onChange={(e) => handleUpdate('input', e.target)}
             />
+            <label className="font-semibold">Password :</label>
+            <input
+                type="password"
+                name="password"
+                placeholder="Enter new password"
+                className="p-2 rounded-md bg-gray-800 border border-gray-500"
+                onChange={(e) => handleUpdate('password', e.target)}
+            />
+
             <label className="font-semibold">Username :</label>
             <input
                 name="username"
@@ -144,7 +128,9 @@ export default function UserInfoUpdate() {
                 name="aboutme"
                 placeholder={user.aboutme}
                 className="p-2 rounded-md bg-gray-800 border border-gray-500"
-                onChange={(e) => handleUpdate('input', e.target)}
+                onChange={(e) => {
+                    handleUpdate('input', e.target)
+                }}
             />
             <label className="font-semibold">Birthday :</label>
             <input
@@ -174,9 +160,8 @@ export default function UserInfoUpdate() {
 
                 <IconArrowsExchange
                     onClick={() => {
-                        console.log(ref.current.value);
-                        handleUpdate('toggleGender')}
-                    }
+                        handleUpdate('toggleGender', ref.current.value)
+                    }}
                     className="ml-2 cursor-pointer hover:text-red-500"
                     size={20}
                 />
