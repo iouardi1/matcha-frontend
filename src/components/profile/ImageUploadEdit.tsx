@@ -1,24 +1,32 @@
-import Image from '@/components/profile/Image'
-import { addImage, uploadFile } from '@/redux/features/profileSetupSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { IconUpload, IconUserFilled } from '@tabler/icons-react'
-import { generateId } from '@/utils/helpers/functions'
+import { generateId, getImage } from '@/utils/helpers/functions'
 import ImagePlaceholder from './ImagePlaceholder'
+import { IconTrash } from '@tabler/icons-react'
+import {
+    addEditImage,
+    deleteEditFile,
+    deleteEditImage,
+    FillEditImages,
+    uploadEditFile,
+} from '@/redux/features/profileUpdateSlice'
 
-export default function ImageUpload() {
-    const uploadInput: any = useRef(null)
-    const uploadImage: any = useRef(null)
-    const gallery: any = useRef(null)
-    let isEventListenerAdded = false
-
+export default function ImageUploadEdit({ userImages }: any) {
     const dispatch = useDispatch()
-    const images = useSelector((state: any) => state.profileSetup.images)
+
+    const images = useSelector((state: any) => state.profileUpdate.images)
+
+    const uploadEditInput: any = useRef(null)
+    const uploadEditImage: any = useRef(null)
+    const galleryEdit: any = useRef(null)
+    let isEventListenerAdded = false
     const placeholder = useSelector(
-        (state: any) => state.profileSetup.imagesPlaceHolders
+        (state: any) => state.profileUpdate.imagesPlaceHolders
     )
 
     useEffect(() => {
+        dispatch(FillEditImages(userImages))
         function uploadEvent(event: any) {
             const file = event.target.files[0]
 
@@ -27,7 +35,7 @@ export default function ImageUpload() {
                 const imageId = generateId()
                 reader.onload = (e: any) => {
                     dispatch(
-                        addImage({
+                        addEditImage({
                             id: imageId,
                             src: e.target.result,
                             path: null,
@@ -35,30 +43,33 @@ export default function ImageUpload() {
                     )
                 }
                 reader.readAsDataURL(file)
-                dispatch(uploadFile(file))
+                dispatch(uploadEditFile(file))
             }
-            uploadInput.current.addEventListener('click', (event: any) => {
+            uploadEditInput.current.addEventListener('click', (event: any) => {
                 event.stopPropagation()
             })
         }
 
         if (!isEventListenerAdded) {
-            uploadImage.current.addEventListener('click', () => {
-                uploadInput.current.click()
+            uploadEditImage.current.addEventListener('click', () => {
+                uploadEditInput.current.click()
             })
             isEventListenerAdded = true
         }
-        if (uploadInput && uploadInput.current) {
-            uploadInput.current.addEventListener('change', uploadEvent)
+        if (uploadEditInput && uploadEditInput.current) {
+            uploadEditInput.current.addEventListener('change', uploadEvent)
             return function cleanup() {
-                uploadInput.current?.removeEventListener('change', uploadEvent)
+                uploadEditInput.current?.removeEventListener(
+                    'change',
+                    uploadEvent
+                )
             }
         }
     }, [])
 
     return (
-        <section className="">
-            <div className='flex justify-center items-center sm:flex-col'>
+        <section>
+            <div className="flex justify-center items-center sm:flex-col">
                 <div className="text-[12px] sm:text-[1em]">
                     <h1>Profile photos</h1>
                 </div>
@@ -71,18 +82,18 @@ export default function ImageUpload() {
                     ) : (
                         <img
                             className="object-cover w-[35px] h-[35px]  sm:w-[50px] sm:h-[50px] p-1 rounded-full ring-2 ring-[#fd5564]"
-                            src={images[0].src}
+                            src={getImage(images[0].src)}
                             alt="Bordered avatar"
                         />
                     )}
                     <div
-                        ref={uploadImage}
-                        id="uploadImage"
+                        ref={uploadEditImage}
+                        id="uploadEditImage"
                         className="flex w-6 h-6 sm:w-8 sm:h-8 ml-4 bg-gray-100 border-gray-400 rounded-lg items-center cursor-pointer"
                     >
                         <input
                             id="upload"
-                            ref={uploadInput}
+                            ref={uploadEditInput}
                             type="file"
                             className="hidden"
                             accept="image/*"
@@ -93,9 +104,33 @@ export default function ImageUpload() {
                 </div>
             </div>
 
-            <div ref={gallery} id="gallery" className="grid grid-cols-5 sm:grid-cols-3 gap-2 sm:gap-3 sm:max-w-[220px] mt-5 place-items-center sm:mx-auto">
-                {images.map((image: any) => (
-                    <Image key={image.id} image={image} />
+            <div
+                ref={galleryEdit}
+                id="galleryEdit"
+                className="grid grid-cols-3 gap-[3px] sm:gap-3 sm:max-w-[220px] mt-5 place-items-center sm:mx-auto"
+            >
+                {images.map((image: any, key: any) => (
+                    <div
+                        key={key}
+                        className="relative hover:blur-none flex max-w-[70px] h-[100px]"
+                    >
+                        <img
+                            className="h-auto w-full rounded-lg"
+                            src={getImage(image.src)}
+                            alt=""
+                        />
+                        <div className="absolute top-2 right-2 flex space-x-2">
+                            <button
+                                className="text-white bg-black bg-opacity-50 p-1 rounded-full hover:bg-opacity-75"
+                                onClick={() => {
+                                    dispatch(deleteEditImage(image.id))
+                                    dispatch(deleteEditFile(image.src))
+                                }}
+                            >
+                                <IconTrash className="w-[15px] h-[15px]" />
+                            </button>
+                        </div>
+                    </div>
                 ))}
                 {placeholder.map((image: any) => (
                     <ImagePlaceholder key={image.id} />
@@ -110,5 +145,3 @@ export default function ImageUpload() {
         </section>
     )
 }
-
-

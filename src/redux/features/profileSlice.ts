@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/_axios/instance'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { startLoading, stopLoading } from './loadingSlice'
+import { ProfileUpdateData } from './profileUpdateSlice'
 
 export interface profileState {
     loading: boolean
@@ -37,6 +37,7 @@ export const profileDetailsFetch: any = createAsyncThunk(
         // if (!response.data.shouldRedirect) {
         // dispatch(stopLoading())
         // }
+        dispatch(ProfileUpdateData(response.data))
         return response.data
     }
 )

@@ -1,42 +1,60 @@
-import React from 'react'
+import { formatDate } from '@/utils/helpers/functions'
+import React, { useEffect } from 'react'
 
+function getRandomColor() {
+    const colors = [
+        'bg-pink-200',
+        'bg-red-200',
+        'bg-yellow-200',
+        'bg-green-200',
+        'bg-blue-200',
+        'bg-purple-200',
+    ]
+    return colors[Math.floor(Math.random() * colors.length)]
+}
 export default function UserInfo({ user }: any) {
+    // useEffect(() => {
+    //     // console.log(user.status);
+    // }, user)
     return (
         <>
-            <div className="text-center mt-4">
-                <h2 className="text-3xl font-extrabold mb-2 text-pink-500">
-                    {user.firstname} {user.lastname}
+            <div className="mx-4 mb-4 text-center">
+                <h2 className="sm:text-2xl text-xl font-extrabold text-white mb-1 inline-block capitalize">
+                    {user.firstname} &nbsp;
                 </h2>
-                <p className="text-sm text-gray-400">@{user.username}</p>
+                <h2 className="sm:text-2xl text-xl font-extrabold text-white mb-1 inline-block capitalize">
+                    {user.lastname}&nbsp;
+                </h2>
+                <h2 className="sm:text-2xl text-lg font-extrabold text-white mb-1 inline-block">
+                    {user.age}yo
+                </h2>
+                <div
+                    className={`${
+                        user.status === 'online' ? 'bg-green-400' : 'bg-red-400'
+                    } w-[10px] h-[10px] inline-block rounded-xl ml-3 relative group`}
+                >
+                    <span
+                        className={` ${
+                            user.status === 'online' ? 'hidden' : 'visible'
+                        } absolute top-full left-1/2 transform -translate-x-1/2 mt-1 w-max p-1 text-xs text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200`}
+                    >
+                        {formatDate(user.last_seen)}
+                    </span>
+                </div>
+                <p className="text-sm text-gray-300">{user.distance}km away</p>
             </div>
-
-            {/* User Details */}
-            <div className="grid grid-cols-2 gap-y-2 mt-6">
-                <p className="col-span-2 text-lg font-semibold text-pink-500 text-center mb-2">
-                    About Me
+            <div className="px-4 text-center">
+                <p className=" font-bold text-white mb-2">About Me</p>
+                <p className="text-md text-gray-200 leading-relaxed mb-4">
+                    {user.aboutme}
                 </p>
-                <p className="col-span-2 text-sm text-gray-200 text-center mb-4">
-                    {user.aboutme || 'No bio provided'}
-                </p>
-
-                <p className="font-semibold text-gray-400">Age</p>
-                <p className="text-gray-200">{user.age}</p>
-
-                <p className="font-semibold text-gray-400">Gender</p>
-                <p className="text-gray-200">{user.gender}</p>
-
-                <p className="font-semibold text-gray-400">Famerate</p>
-                <p className="text-gray-200">{user.famerate}</p>
-
-                <p className="col-span-2 text-lg font-semibold text-pink-500 text-center mt-4 mb-2">
-                    Interests
-                </p>
-                <div className="col-span-2 flex flex-wrap justify-center mt-2">
+                <p className="text-sm font-bold text-white mb-2">Interests</p>
+                <div className="flex flex-wrap justify-center mt-2">
                     {user.interests &&
-                        user.interests.map((interest, index) => (
+                        user.interests.map((interest: any, index: any) => (
                             <span
                                 key={index}
-                                className=" text-pink-500 border border-pink-500 rounded-full px-3 py-1 m-1 text-sm"
+                                className={`text-sm border rounded-full px-3 py-1 m-1 text-black ${getRandomColor()}`}
                             >
                                 #{interest}
                             </span>

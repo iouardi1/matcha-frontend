@@ -63,3 +63,11 @@ export default function Modal({ error }: any) {
 		</Dialog>
 	);
 }
+{/* <div className="inset-0 bg-black bg-opacity-50 flex justify-center items-center z-150">
+            <div className="bg-white p-4 rounded">
+                <button className="absolute top-2 right-2" onClick={onClose}>
+                    X
+                </button>
+                {children}
+            </div>
+        </div> */}

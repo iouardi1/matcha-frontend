@@ -9,7 +9,7 @@ export default function Filters() {
     const dispatch = useDispatch()
     const [ageGap, setAgeGap] = useState({ min: 18, max: 100 })
     const [distance, setDistance] = useState(1)
-    const [fameRate, setFameRate] = useState(1)
+    const [fameRate, setFameRate] = useState(10)
 
     const handleAgeGapChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -68,9 +68,9 @@ export default function Filters() {
                     </div>
                     <input
                         type="range"
-                        min="0"
-                        max="100"
-                        step="1"
+                        min="1"
+                        max="1000"
+                        step="1 "
                         value={distance}
                         className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#FF7854]"
                         onChange={(e) => {
@@ -94,9 +94,10 @@ export default function Filters() {
                     </div>
                     <input
                         type="range"
-                        min="1"
-                        max="10"
+                        min="0"
+                        max="20"
                         step="1"
+                        value={fameRate}
                         className="w-full mt-2 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#007AFF]"
                         onChange={(e) => {
                             setFameRate(parseInt(e.target.value, 10))
