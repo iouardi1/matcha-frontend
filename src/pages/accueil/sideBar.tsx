@@ -38,6 +38,7 @@ const SideBar = () => {
     const dispatch = useDispatch()
     const activeTab = useSelector((state: any) => state.sideBar.tab)
     const matches = useSelector((state: any) => state.sideBar.matches)
+    const potentialMatches = useSelector((state: any) => state.sideBar.potentialMatch)
     const likes = useSelector((state: any) => state.sideBar.likes)
     const notifs = useSelector((state: any) => state.sideBar.notifications)
     const conversations = useSelector(
@@ -78,13 +79,16 @@ const SideBar = () => {
     }
     useEffect(() => {
         fetchProfile()
-    }, [dispatch, isSidebarVisible])
+    }, [dispatch, isSidebarVisible, matches, potentialMatches])
 
     // useEffect notif
     useEffect(() => {
         notifSocket?.on('notif received', (notif) => {
             dispatch(addNotif(notif))
             setNotif(true)
+            if (notif?.type == 'match') {
+                dispatch(getListOfMatches())
+            }
         })
         return () => {
             notifSocket?.off('notif received')

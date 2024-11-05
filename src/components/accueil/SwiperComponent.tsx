@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Image from "next/image"
-import menuIcon from "@/utils/pictures/icons-menu.png"
+import Image from 'next/image'
+import menuIcon from '@/utils/pictures/icons-menu.png'
 import Swipeable from 'react-swipy'
 import Swiper from './utils/Swiper' // Adjust the path as needed
 import Card from './Card'
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
     createNotification,
     getListOfMatches,
+    getListOfPotentialMatches,
     setTab,
     toggleSidebar,
 } from '@/redux/features/sideBarSlice'
@@ -39,6 +40,7 @@ const SwiperComponent = () => {
     const socket = useSocket()
 
     useEffect(() => {
+        dispatch(getListOfPotentialMatches())
         setCards([...matches])
     }, [matches, dispatch])
 
@@ -49,6 +51,7 @@ const SwiperComponent = () => {
                 user: null,
                 id: lastSwipedId,
             })
+
             dispatch(
                 createNotification({
                     notifType: 'match',
@@ -57,11 +60,19 @@ const SwiperComponent = () => {
                 })
             )
         }
+        dispatch(getListOfMatches())
     }, [dispatch, matchNotif, lastSwipedId])
 
     const remove = () => {
         setCards(cards.slice(1))
     }
+
+    useEffect(() => {
+        if (cards.length === 0) {
+            dispatch(getListOfPotentialMatches())
+        }
+    }, [dispatch, cards.length])
+
     const handleSwipe = (direction: any) => {
         if (direction === 'right') {
             dispatch(setLastSwipedId(cards[0]?.id))
@@ -96,7 +107,6 @@ const SwiperComponent = () => {
     }
 
     const viewProfile = (id: any) => {
-        console.log(id);
         socket?.emit('send notif', {
             notifType: 'view',
             user: null,
@@ -134,23 +144,21 @@ const SwiperComponent = () => {
     }
 
     const displaySidebar = () => {
-        dispatch(toggleSidebar());
-    };
+        dispatch(toggleSidebar())
+    }
 
     if (matches.length == 0) {
         return (
-            <div className='no-conv-yet'>
-                <p>
-                    No Matches Yet :c
-                </p>
+            <div className="no-conv-yet">
+                <p>No Matches Yet :c</p>
                 <button
-                onClick={displaySidebar}
-                className='absolute top-0 left-0 m-[10px] md:hidden'
+                    onClick={displaySidebar}
+                    className="absolute top-0 left-0 m-[10px] md:hidden"
                 >
                     <Image
                         src={menuIcon}
                         alt=""
-                        className='w-[35px] h-[35px]'
+                        className="w-[35px] h-[35px]"
                     />
                 </button>
             </div>
@@ -161,13 +169,9 @@ const SwiperComponent = () => {
         <div className="h-full relative flex justify-center items-center w-full overflow-hidden">
             <button
                 onClick={displaySidebar}
-                className='absolute top-0 left-0 m-[10px] md:hidden'
+                className="absolute top-0 left-0 m-[10px] md:hidden"
             >
-                <Image
-                    src={menuIcon}
-                    alt=""
-                    className='w-[35px] h-[35px]'
-                />
+                <Image src={menuIcon} alt="" className="w-[35px] h-[35px]" />
             </button>
             <div className="relative sm:w-[350px] sm:h-[500px] xs:w-[300px] xs:h-[450px]  w-[230px] h-[450px]">
                 {cards.length > 0 && (
@@ -215,7 +219,7 @@ const SwiperComponent = () => {
                                             className="w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-red-500 hover:bg-red-500 flex items-center justify-center cursor-pointer"
                                             onClick={handleBlock}
                                         >
-                                            <IconUserCancel color="white"/>
+                                            <IconUserCancel color="white" />
                                         </Button>
                                         <Button
                                             name={'like'}
@@ -241,7 +245,6 @@ const SwiperComponent = () => {
                                                 />
                                             )}
                                         </Button>
-                                       
                                     </div>
                                 )
                             }}
@@ -267,7 +270,7 @@ const SwiperComponent = () => {
                                 </div>
 
                                 <div className="w-full h-[20%] justify-between text-white font-light xs:font-bold capitalize p-2 text-center z-10 flex bg-black bg-opacity-10">
-                                    <div className='flex flex-col-reverse items-center'>
+                                    <div className="flex flex-col-reverse items-center">
                                         <div className="flex font-light xs:font-bold text-base ">
                                             <p>Famerate</p>
                                             <span>&nbsp;&nbsp;</span>
@@ -281,12 +284,18 @@ const SwiperComponent = () => {
                                             <p>{cards[0].age}</p>{' '}
                                         </div>
                                     </div>
-                                    <div className='flex items-center h-full' onClick={() => {
-                                        dispatch(setTab('details'))
-                                        dispatch(setId(cards[0].id))
-                                        viewProfile(cards[0].id)
-                                    }}>
-                                        <IconUserCircle color="#ffffff" className='xs:w-[50px] xs:h-[50px] w-[30px] h-[30px]'/>
+                                    <div
+                                        className="flex items-center h-full"
+                                        onClick={() => {
+                                            dispatch(setTab('details'))
+                                            dispatch(setId(cards[0].id))
+                                            viewProfile(cards[0].id)
+                                        }}
+                                    >
+                                        <IconUserCircle
+                                            color="#ffffff"
+                                            className="xs:w-[50px] xs:h-[50px] w-[30px] h-[30px]"
+                                        />
                                     </div>
                                 </div>
 

@@ -4,7 +4,7 @@ import menuIcon from "@/utils/pictures/icons-menu.png"
 import { useEffect, useRef, useState } from "react";
 import { addNewMessage, addNewMessages, fetchConversationMessages } from "@/redux/features/conversationSlice";
 import { useSocket } from "@/redux/context/SocketContext";
-import { createNotification, getConversations, toggleSidebar, updateLastMessage} from "@/redux/features/sideBarSlice";
+import { createNotification, getConversations, getListOfMatches, setTab, toggleSidebar, updateLastMessage} from "@/redux/features/sideBarSlice";
 import { getImage } from "@/utils/helpers/functions";
 import locationIcon from "@/utils/pictures/location-icon.png"
 import heartIcon from "@/utils/pictures/heart-icon.png"
@@ -33,7 +33,7 @@ const Messages = () => {
             socket?.on('message received', (message: any) => {
                 dispatch(addNewMessages(message));
                 dispatch(updateLastMessage(message));
-                // dispatch(getConversations(Profile.id));
+                // dispatch(getConversations(Profile.id))
             });
         }
 
@@ -53,6 +53,8 @@ const Messages = () => {
 
     const handleBlock = () => {
         dispatch(blockUser(activeConversation))
+        dispatch(setTab('matches'))
+        dispatch(getListOfMatches())
     }
 
     const displaySidebar = () => {

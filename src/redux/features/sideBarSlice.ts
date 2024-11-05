@@ -5,6 +5,7 @@ import { startLoading, stopLoading } from './loadingSlice'
 
 interface Match {
     id: number
+    email: string
     username: string
     profile_picture: any
 }
@@ -77,6 +78,8 @@ const initialState: SideBarState = {
         maxAgeGap: 100,
         distance: 1,
         fameRate: 10,
+        limit: 10,
+        offset: 0,
     },
 }
 
@@ -201,7 +204,7 @@ export const createNotification: any = createAsyncThunk(
 )
 export const getListOfPotentialMatches: any = createAsyncThunk(
     'getListOfPotentialMatches',
-    async (user_id, { rejectWithValue, getState }: any) => {
+    async (user_id, { rejectWithValue, getState, dispatch }: any) => {
         const state = getState().sideBar.filter
         const params: any = {
             ...(state.distance && { location: state.distance }),
@@ -210,6 +213,8 @@ export const getListOfPotentialMatches: any = createAsyncThunk(
                     ageGap: `${state.minAgeGap}-${state.maxAgeGap}`,
                 }),
             ...(state.fameRate !== null && { fameRate: state.fameRate }),
+            limit: state.limit,
+            offset: state.offset, 
         }
         try {
             const response = await axiosInstance.get(`filterMatches`, {
@@ -261,6 +266,9 @@ const sideBarSlice = createSlice({
             const { attribute, value } = action.payload
             state.filter[attribute] = value
         },
+        updateOffset: (state, action) => {
+            state.filter.offset += action.payload;
+          },
     },
     extraReducers: (builder) => {
         builder
@@ -294,8 +302,10 @@ const sideBarSlice = createSlice({
             })
             .addCase(getListOfMatches.fulfilled, (state, action) => {
                 state.loading = false
-                state.matches = action.payload.data
-            })
+                if (JSON.stringify(state.matches) !== JSON.stringify(action.payload.data)) {
+                    state.matches = action.payload.data
+                }
+                })
 
             .addCase(getListOfMatches.rejected, (state, action) => {
                 state.loading = false
@@ -315,7 +325,11 @@ const sideBarSlice = createSlice({
             })
             .addCase(getListOfPotentialMatches.fulfilled, (state, action) => {
                 state.loading = false
-                state.potentialMatch = action.payload.matches
+                // state.potentialMatch = action.payload.matches
+                if (JSON.stringify(state.potentialMatch) !== JSON.stringify(action.payload.matches)) {
+                    state.potentialMatch = action.payload.matches
+                }
+
             })
             .addCase(getListOfPotentialMatches.rejected, (state, action) => {
                 state.loading = false
@@ -343,5 +357,6 @@ export const {
     addNotif,
     toggleSidebar,
     updateFilter,
+    updateOffset,
 } = sideBarSlice.actions
 export default sideBarSlice.reducer
