@@ -73,10 +73,10 @@ const initialState: SideBarState = {
     error: null,
     isSidebarVisible: false,
     filter: {
-        minAgeGap: 18,
-        maxAgeGap: 100,
-        distance: 1,
-        fameRate: 10,
+        minAgeGap: null,
+        maxAgeGap: null,
+        distance: null,
+        fameRate: null,
     },
 }
 

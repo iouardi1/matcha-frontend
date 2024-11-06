@@ -3,10 +3,11 @@ import {
     updateFilter,
 } from '@/redux/features/sideBarSlice'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-export default function Filters() {
+export default function Filters({ setShow }: any) {
     const dispatch = useDispatch()
+    const initFilters = useSelector((state: any) => state.sideBar.filter)
     const [ageGap, setAgeGap] = useState({ min: 18, max: 100 })
     const [distance, setDistance] = useState(1)
     const [fameRate, setFameRate] = useState(10)
@@ -112,7 +113,42 @@ export default function Filters() {
                 </div>
 
                 <div
-                    onClick={() => dispatch(getListOfPotentialMatches())}
+                    onClick={() => {
+                        console.log(initFilters)
+                        if (
+                            !initFilters.minAgeGap &&
+                            !initFilters.maxAgeGap &&
+                            !initFilters.distance &&
+                            !initFilters.fameRate
+                        ) {
+                            dispatch(
+                                updateFilter({
+                                    attribute: `fameRate`,
+                                    value: 10,
+                                })
+                            )
+                            dispatch(
+                                updateFilter({
+                                    attribute: `distance`,
+                                    value: 1,
+                                })
+                            )
+                            dispatch(
+                                updateFilter({
+                                    attribute: `minAgeGap`,
+                                    value: 18,
+                                })
+                            )
+                            dispatch(
+                                updateFilter({
+                                    attribute: `maxAgeGap`,
+                                    value: 100,
+                                })
+                            )
+                        }
+                        dispatch(getListOfPotentialMatches())
+                        setShow(false)
+                    }}
                     className="w-full py-2 mt-4 bg-[#FE3C72] hover:bg-[#FF7854] text-white font-semibold rounded-lg transition duration-200"
                 >
                     Apply

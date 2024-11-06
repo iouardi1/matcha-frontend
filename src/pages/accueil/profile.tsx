@@ -74,14 +74,14 @@ export default function Profile() {
                     ) : (
                         <div className="flex w-full justify-evenly">
                             <Button
-                                name={'like'}
-                                className={`w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab6] hover:bg-[#20dab6] flex items-center justify-center cursor-pointer`}
+                                name={'dislike'}
+                                className={`w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59795] hover:bg-[#f59795] flex items-center justify-center cursor-pointer`}
                                 onClick={() => {
-                                    dispatch(swipeRight(user))
+                                    dispatch(swipeLeft(user))
                                     dispatch(setTab('matches'))
                                 }}
                             >
-                                <IconHeartFilled />
+                                <IconX />
                             </Button>
                             <Button
                                 name={'block'}
@@ -93,15 +93,16 @@ export default function Profile() {
                             >
                                 <IconUserCancel color="white" />
                             </Button>
+
                             <Button
-                                name={'dislike'}
-                                className={`w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#f59795] hover:bg-[#f59795] flex items-center justify-center cursor-pointer`}
+                                name={'like'}
+                                className={`w-[50px] h-[50px] rounded-full bg-transparent border-[2px] border-[#20dab6] hover:bg-[#20dab6] flex items-center justify-center cursor-pointer`}
                                 onClick={() => {
-                                    dispatch(swipeLeft(user))
+                                    dispatch(swipeRight(user))
                                     dispatch(setTab('matches'))
                                 }}
                             >
-                                <IconX />
+                                <IconHeartFilled />
                             </Button>
                         </div>
                     )}

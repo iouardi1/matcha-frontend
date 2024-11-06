@@ -174,7 +174,7 @@ const SideBar = () => {
                             } flex flex-col items-center bg-white w-[400px] h-auto p-6 absolute rounded-xl z-20 left-9 top-6 space-y-6`}
                             onClick={(event) => event.stopPropagation()}
                         >
-                            <Filters />
+                            <Filters setShow={setShowFilter}/>
                         </div>
                         <Image
                             src={settingPath}

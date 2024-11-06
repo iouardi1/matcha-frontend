@@ -10,7 +10,6 @@ export default function NotifItem({ notif }: any) {
     const socket = useSocket()
 
     const viewProfile = (id: any) => {
-        // console.log(id)
         socket?.emit('send notif', {
             notifType: 'view',
             user: null,
@@ -61,8 +60,8 @@ export default function NotifItem({ notif }: any) {
                 <div
                     onClick={() => {
                         dispatch(setTab('details'))
-                        dispatch(setId(notif.id))
-                        viewProfile(notif.id)
+                        dispatch(setId(notif.senderid))
+                        viewProfile(notif.senderid)
                     }}
                     className="bg-[#fd5564] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-pink-500 transition duration-200"
                 >
